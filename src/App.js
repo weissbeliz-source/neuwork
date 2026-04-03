@@ -140,7 +140,7 @@ export default function App() {
             <div style={{ width: 32, height: 32, background: "#2C2C2C", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <span style={{ color: "#F5F0E8", fontSize: 14, fontFamily: "Georgia" }}>∞</span>
             </div>
-            <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 20, letterSpacing: "-0.5px" }}>neuwork</span>
+            <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 20, letterSpacing: "-0.5px" }}>mole</span>
           </div>
           <nav style={{ display: "flex", gap: 4 }}>
             {NAV_ITEMS.map(item => (
@@ -165,7 +165,7 @@ export default function App() {
             {/* WAITLIST */}
             <div style={{ background: "white", borderRadius: 20, padding: 32, marginBottom: 48, boxShadow: "0 2px 8px rgba(0,0,0,0.06)", textAlign: "center" }}>
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Jetzt vormerken lassen</h2>
-              <p style={{ fontFamily: "Source Sans 3", color: "#888", fontSize: 15, marginBottom: 24 }}>Sei dabei wenn neuwork startet – trag dich in die Warteliste ein!</p>
+              <p style={{ fontFamily: "Source Sans 3", color: "#888", fontSize: 15, marginBottom: 24 }}>Sei dabei wenn mole startet – trag dich in die Warteliste ein!</p>
               <iframe
                 src={WAITLIST_URL}
                 width="100%"
@@ -180,8 +180,8 @@ export default function App() {
             <div style={{ marginBottom: 48, maxWidth: 600 }}>
               <p style={{ fontFamily: "Source Sans 3", fontSize: 13, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", color: "#888", marginBottom: 12 }}>Willkommen zurück, Maya</p>
               <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 44, fontWeight: 700, lineHeight: 1.15, marginBottom: 16 }}>
-                Arbeit, die zu<br />
-                <em style={{ fontStyle: "italic", color: "#8B7EC8" }}>dir</em> passt.
+                Inklusiv. Für uns.<br />
+                <em style={{ fontStyle: "italic", color: "#8B7EC8" }}>Ab sofort.</em>
               </h1>
               <p style={{ fontFamily: "Source Sans 3", fontSize: 16, color: "#666", lineHeight: 1.7, maxWidth: 480 }}>
                 Ein Netzwerk ohne Masking-Zwang. Firmen, die neurodivergente Stärken wirklich schätzen – nicht nur tolerieren.
