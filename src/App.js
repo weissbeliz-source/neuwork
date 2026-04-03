@@ -2,6 +2,8 @@ import { useState } from "react";
 
 const NAV_ITEMS = ["Entdecken", "Jobs", "Firmen", "Community", "Profil"];
 
+const WAITLIST_URL = "https://2dc38334.sibforms.com/serve/MUIFAPKpOnstY_-htfpGf8fSuN_3L6kSak_nq5bhpByLgceCY8Y4ELFy6yuneqI_G573gDtR1KAmb5Fkk7WHrhGXc3Ymc91KV9F95wvezX667FuUj-Q0XPJKutk5kc11IMYiH8umCTSuum50v4T5evlteY7oFAwPo05t1ZzxiUOtcTggYVSF4FtdLP1TZBYHjqLXC8vnMXFOX0hNlA==";
+
 const JOBS = [
   {
     id: 1,
@@ -74,7 +76,7 @@ const COMPANIES = [
     color: "#5B9BAD"
   }
 ];
-const WAITLIST_URL = "https://2dc38334.sibforms.com/serve/MUIFAPKpOnstY_-htfpGf8fSuN_3L6kSak_nq5bhpByLgceCY8Y4ELFy6yuneqI_G573gDtR1KAmb5Fkk7WHrhGXc3Ymc91KV9F95wvezX667FuUj-Q0XPJKutk5kc11IMYiH8umCTSuum50v4T5evlteY7oFAwPo05t1ZzxiUOtcTggYVSF4FtdLP1TZBYHjqLXC8vnMXFOX0hNlA==";
+
 const PROFILE = {
   name: "Maya Berger",
   pronouns: "sie/ihr",
@@ -159,11 +161,22 @@ export default function App() {
 
         {/* ENTDECKEN */}
         {activeNav === "Entdecken" && (
-          <div> <div style={{background:"white", borderRadius:20, padding:32, marginBottom:40, boxShadow:"0 2px 8px rgba(0,0,0,0.06)", textAlign:"center"}}>
-          <h2 style={{fontFamily:"'Playfair Display', serif", fontSize:24, marginBottom:8}}>Jetzt vormerken lassen</h2>
-          <p style={{fontFamily:"Source Sans 3", color:"#888", marginBottom:20}}>Sei dabei wenn neuwork startet!</p>
-          <iframe src={WAITLIST_URL} width="100%" height="305" frameBorder="0" scrolling="auto" style={{maxWidth:540, display:"block", margin:"0 auto"}}></iframe>
-        </div>
+          <div>
+            {/* WAITLIST */}
+            <div style={{ background: "white", borderRadius: 20, padding: 32, marginBottom: 48, boxShadow: "0 2px 8px rgba(0,0,0,0.06)", textAlign: "center" }}>
+              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Jetzt vormerken lassen</h2>
+              <p style={{ fontFamily: "Source Sans 3", color: "#888", fontSize: 15, marginBottom: 24 }}>Sei dabei wenn neuwork startet – trag dich in die Warteliste ein!</p>
+              <iframe
+                src={WAITLIST_URL}
+                width="100%"
+                height="305"
+                frameBorder="0"
+                scrolling="auto"
+                title="Waitlist"
+                style={{ maxWidth: 540, display: "block", margin: "0 auto" }}
+              ></iframe>
+            </div>
+
             <div style={{ marginBottom: 48, maxWidth: 600 }}>
               <p style={{ fontFamily: "Source Sans 3", fontSize: 13, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", color: "#888", marginBottom: 12 }}>Willkommen zurück, Maya</p>
               <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 44, fontWeight: 700, lineHeight: 1.15, marginBottom: 16 }}>
@@ -224,7 +237,6 @@ export default function App() {
                 <p style={{ fontFamily: "Source Sans 3", fontSize: 14, color: "#888" }}>Gefiltert nach deinen Bedürfnissen</p>
               </div>
 
-              {/* Filter Tags */}
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 24 }}>
                 {["Remote", "Async", "ADHS-freundlich", "Ruhige Umgebung", "Teilzeit"].map(f => (
                   <span key={f} style={{ padding: "6px 14px", borderRadius: 20, border: "1.5px solid #ddd", fontSize: 13, fontFamily: "Source Sans 3", cursor: "pointer", background: "white", color: "#555" }}>{f}</span>
@@ -259,7 +271,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Job Detail */}
             {selectedJob && (
               <div style={{ background: "white", borderRadius: 20, padding: 32, boxShadow: "0 2px 16px rgba(0,0,0,0.08)", height: "fit-content", position: "sticky", top: 84 }}>
                 <div style={{ display: "flex", gap: 16, alignItems: "flex-start", marginBottom: 24 }}>
@@ -387,7 +398,6 @@ export default function App() {
         {/* PROFIL */}
         {activeNav === "Profil" && (
           <div style={{ maxWidth: 720, margin: "0 auto" }}>
-            {/* Header */}
             <div style={{ background: "white", borderRadius: 20, padding: 32, marginBottom: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
               <div style={{ display: "flex", gap: 20, alignItems: "flex-start", marginBottom: 24 }}>
                 <div style={{ width: 72, height: 72, borderRadius: "50%", background: "#8B7EC8", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -405,13 +415,11 @@ export default function App() {
               </div>
             </div>
 
-            {/* Stärken */}
             <div style={{ background: "white", borderRadius: 20, padding: 28, marginBottom: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
               <p className="section-label">Meine Stärken</p>
               <div>{PROFILE.strengths.map(s => <span key={s} className="strength-pill">{s}</span>)}</div>
             </div>
 
-            {/* Arbeitsweise */}
             <div style={{ background: "white", borderRadius: 20, padding: 28, marginBottom: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
               <p className="section-label">Wie ich arbeite</p>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
@@ -424,7 +432,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Bedürfnisse */}
             <div style={{ background: "white", borderRadius: 20, padding: 28, marginBottom: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
               <p className="section-label">Was ich brauche</p>
               <div>{PROFILE.needs.map(n => (
@@ -435,7 +442,6 @@ export default function App() {
               ))}</div>
             </div>
 
-            {/* Skills */}
             <div style={{ background: "white", borderRadius: 20, padding: 28, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
               <p className="section-label">Skills</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
