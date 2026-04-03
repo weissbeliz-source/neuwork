@@ -74,7 +74,7 @@ const COMPANIES = [
     color: "#5B9BAD"
   }
 ];
-
+const WAITLIST_URL = "https://2dc38334.sibforms.com/serve/MUIFAPKpOnstY_-htfpGf8fSuN_3L6kSak_nq5bhpByLgceCY8Y4ELFy6yuneqI_G573gDtR1KAmb5Fkk7WHrhGXc3Ymc91KV9F95wvezX667FuUj-Q0XPJKutk5kc11IMYiH8umCTSuum50v4T5evlteY7oFAwPo05t1ZzxiUOtcTggYVSF4FtdLP1TZBYHjqLXC8vnMXFOX0hNlA==";
 const PROFILE = {
   name: "Maya Berger",
   pronouns: "sie/ihr",
@@ -159,7 +159,11 @@ export default function App() {
 
         {/* ENTDECKEN */}
         {activeNav === "Entdecken" && (
-          <div>
+          <div> <div style={{background:"white", borderRadius:20, padding:32, marginBottom:40, boxShadow:"0 2px 8px rgba(0,0,0,0.06)", textAlign:"center"}}>
+          <h2 style={{fontFamily:"'Playfair Display', serif", fontSize:24, marginBottom:8}}>Jetzt vormerken lassen</h2>
+          <p style={{fontFamily:"Source Sans 3", color:"#888", marginBottom:20}}>Sei dabei wenn neuwork startet!</p>
+          <iframe src={WAITLIST_URL} width="100%" height="305" frameBorder="0" scrolling="auto" style={{maxWidth:540, display:"block", margin:"0 auto"}}></iframe>
+        </div>
             <div style={{ marginBottom: 48, maxWidth: 600 }}>
               <p style={{ fontFamily: "Source Sans 3", fontSize: 13, fontWeight: 600, letterSpacing: "2px", textTransform: "uppercase", color: "#888", marginBottom: 12 }}>Willkommen zurück, Maya</p>
               <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 44, fontWeight: 700, lineHeight: 1.15, marginBottom: 16 }}>
