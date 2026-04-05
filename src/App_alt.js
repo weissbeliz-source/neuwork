@@ -1,130 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 
 const NAV_ITEMS = ["Entdecken", "Jobs", "Firmen", "Community", "Profil"];
 
-const WAITLIST_URL =
-  "https://2dc38334.sibforms.com/serve/MUIFAPKpOnstY_-htfpGf8fSuN_3L6kSak_nq5bhpByLgceCY8Y4ELFy6yuneqI_G573gDtR1KAmb5Fkk7WHrhGXc3Ymc91KV9F95wvezX667FuUj-Q0XPJKutk5kc11IMYiH8umCTSuum50v4T5evlteY7oFAwPo05t1ZzxiUOtcTggYVSF4FtdLP1TZBYHjqLXC8vnMXFOX0hNlA==";
+const WAITLIST_URL = "https://2dc38334.sibforms.com/serve/MUIFAPKpOnstY_-htfpGf8fSuN_3L6kSak_nq5bhpByLgceCY8Y4ELFy6yuneqI_G573gDtR1KAmb5Fkk7WHrhGXc3Ymc91KV9F95wvezX667FuUj-Q0XPJKutk5kc11IMYiH8umCTSuum50v4T5evlteY7oFAwPo05t1ZzxiUOtcTggYVSF4FtdLP1TZBYHjqLXC8vnMXFOX0hNlA==";
 
 const JOBS = [
   { id: 1, title: "UX Researcher", company: "Klara GmbH", tags: ["Remote", "Flexible Zeiten", "Ruhiges Büro", "Kein Open Space"], type: "Vollzeit", color: "#7C9E87", match: 94, desc: "Wir suchen jemanden, der mit echtem Einfühlungsvermögen Nutzerbedürfnisse erforscht. Kein Daily-Standup-Zwang, async-first." },
   { id: 2, title: "Backend Entwickler:in", company: "Softalpha", tags: ["Hybrid", "Masking-frei", "ADHS-freundlich", "Ruhezonen"], type: "Teilzeit möglich", color: "#8B7EC8", match: 87, desc: "Python/Django. Wir kommunizieren schriftlich, Meetings nur wenn nötig. Du darfst Kopfhörer tragen, dich bewegen, deinen Rhythmus leben." },
   { id: 3, title: "Grafikdesign & Illustration", company: "Bunte Welt Verlag", tags: ["Vollständig Remote", "Async", "Flexible Deadlines", "Keine Kamera-Pflicht"], type: "Freelance", color: "#D4956A", match: 81, desc: "Kinderbuchillustrationen und Marketingmaterial. Wir respektieren deine Energie und arbeiten mit klaren, schriftlichen Briefings." },
-  { id: 4, title: "Data Analyst:in", company: "GreenStats AG", tags: ["Remote", "Einzelbüro möglich", "Reizarme Umgebung"], type: "Vollzeit", color: "#5B9BAD", match: 76, desc: "Nachhaltigkeitsdaten analysieren und visualisieren. Kleines Team, flache Hierarchie, du bekommst klare Aufgaben mit Kontext." },
+  { id: 4, title: "Data Analyst:in", company: "GreenStats AG", tags: ["Remote", "Einzelbüro möglich", "Reizarme Umgebung"], type: "Vollzeit", color: "#5B9BAD", match: 76, desc: "Nachhaltigkeitsdaten analysieren und visualisieren. Kleines Team, flache Hierarchie, du bekommst klare Aufgaben mit Kontext." }
 ];
 
 const COMPANIES = [
   { id: 1, name: "Klara GmbH", sector: "UX & Design", badge: "Zertifiziert inklusiv", checks: ["Neurodivergenz-Awareness-Training", "Flexible Arbeitszeiten", "Ruhezonen im Büro", "Async-First Kommunikation", "Individuelle Onboarding-Pläne"], employees: "45–60", color: "#7C9E87" },
   { id: 2, name: "Softalpha", sector: "Software & IT", badge: "ADHS-freundlich", checks: ["Kein Masking erwartet", "Kopfhörer-freundlich", "Schriftliche Kommunikation bevorzugt", "Reizarme Meetingräume"], employees: "20–35", color: "#8B7EC8" },
-  { id: 3, name: "auticon Deutschland", sector: "IT-Consulting", badge: "Spezialisiert auf Autismus", checks: ["Von Autisten gegründet", "100% neurodivergente Mitarbeitende", "Job-Coaches inklusive", "Individuelle Begleitung"], employees: "200+", color: "#5B9BAD" },
+  { id: 3, name: "auticon Deutschland", sector: "IT-Consulting", badge: "Spezialisiert auf Autismus", checks: ["Von Autisten gegründet", "100% neurodivergente Mitarbeitende", "Job-Coaches inklusive", "Individuelle Begleitung"], employees: "200+", color: "#5B9BAD" }
 ];
-
-const TAG_OPTIONS = {
-  strengths: ["Empathisch", "Analytisch", "Kreativ", "Fokussiert", "Detailorientiert", "Strategisch", "Zuverlässig", "Kommunikationsstark", "Strukturiert", "Lösungsorientiert"],
-  work_style: ["Async", "Schriftlich", "Mit klaren Aufgaben", "Mit viel Fokuszeit", "Eigenständig", "Im kleinen Team", "Remote", "Hybrid", "Mit Planbarkeit", "Kreativ frei"],
-  needs: [
-    "Flexible Zeiten", "Teilzeit möglich", "Remote möglich", "Hybrid möglich", "Asynchrone Kommunikation", "Schriftliche Kommunikation", "Klare Kommunikation", "Klare Prioritäten", "Klare Aufgabenbeschreibung", "Klare Deadlines", "Vorhersehbare Abläufe", "Feste Routinen", "Strukturierte Einarbeitung", "Buddy / Ansprechperson", "Job-Coaching", "Zusätzliche Check-ins", "Mehr Bearbeitungszeit", "Angepasste Zielvorgaben", "Flexible Pausen", "Zusätzliche Pausen", "Weniger Meetings", "Meetings nur mit Agenda", "Protokolle nach Meetings", "Aufgaben in kleinen Schritten", "Erinnerungen / Prompts", "Einzelgespräche statt Gruppenrunden",
-    "Reizarme Umgebung", "Ruhiger Arbeitsplatz", "Einzelbüro", "Ruheraum", "Noise-Cancelling erlaubt", "Kopfhörer erlaubt", "Keine Kamera-Pflicht", "Wenig Kontextwechsel", "Ununterbrochene Fokuszeit", "Visuelle Planungs-Tools", "Schriftliche Briefings", "Keine spontanen Anrufe", "Vorbereitung vor Meetings", "Masking-freie Kultur", "Psychologische Sicherheit", "Sensorische Rücksichtnahme", "Reduzierte soziale Pflichttermine",
-    "Barrierefreier Eingang", "Aufzug", "Rampe", "Automatische Türen", "Breite Wege / Türen", "Rollstuhlgerechter Arbeitsplatz", "Höhenverstellbarer Tisch", "Ergonomischer Stuhl", "Angepasste Arbeitsmittel", "Kurze Wege im Büro", "Parkplatz in der Nähe", "Barrierefreie Toilette", "Homeoffice statt Pendeln", "Hebe- / Tragelast anpassen", "Arbeitsplatz nah an wichtigen Räumen", "Evakuierungsplan / Notfallhilfe",
-    "Screenreader-kompatible Tools", "Tastaturbedienbare Software", "Braille-Unterstützung", "Große Schrift", "Hoher Kontrast", "Vergrößerungssoftware", "Vorlesefunktionen", "Dokumente in zugänglichen Formaten", "Alt-Text in internen Materialien", "Gute Beleuchtung", "Blendfreies Licht", "Orientierungshilfen im Raum",
-    "Untertitel / Captions", "Live-Transkription", "Gebärdensprachdolmetschung", "Schriftliche Zusammenfassungen", "Chat statt Telefon", "Visuelle Alarme", "Assistive Hörtechnik", "Ruhige Meetingumgebung", "Gute Mikrofonqualität", "Sprechdisziplin im Meeting", "Eine Person spricht gleichzeitig",
-    "Einfache Sprache", "Leichte Sprache", "Schritt-für-Schritt-Anleitungen", "Wiederholbare Arbeitsabläufe", "Visuelle Anleitungen", "Beispiele / Musteraufgaben", "Mehr Zeit zum Lernen", "Praktische Demonstrationen", "Begleitete Einarbeitung", "Verständnis-Checks ohne Druck",
-    "Flexible Startzeiten", "Späterer Arbeitsbeginn", "Pacing / Energiemanagement", "Sitz- und Stehoption", "Möglichkeit zum Liegen / Ausruhen", "Temperaturkontrolle", "Zugang zu Wasser / Snacks / Medikamenten", "Termine um Behandlungen herum", "Reduzierte Reisetätigkeit", "Arbeiten von zuhause bei Schub / Erschöpfung",
-    "Weniger Lärm", "Weniger grelles Licht", "Weniger Gerüche", "Parfümarme Umgebung", "Reizarme Dekoration", "Fester Sitzplatz", "Rückzugsort bei Überlastung"
-  ],
-  skills: ["Research", "UX", "Schreiben", "Organisation", "Projektmanagement", "Figma", "Canva", "Beratung", "Moderation", "Content", "Konzeption", "Kommunikation"]
-};
-
-const NEED_CATEGORIES = [
-  { title: "Organisation & Kommunikation", tags: ["Flexible Zeiten", "Teilzeit möglich", "Remote möglich", "Hybrid möglich", "Asynchrone Kommunikation", "Schriftliche Kommunikation", "Klare Kommunikation", "Klare Prioritäten", "Klare Aufgabenbeschreibung", "Klare Deadlines", "Vorhersehbare Abläufe", "Feste Routinen", "Strukturierte Einarbeitung", "Buddy / Ansprechperson", "Job-Coaching", "Zusätzliche Check-ins", "Mehr Bearbeitungszeit", "Angepasste Zielvorgaben", "Flexible Pausen", "Zusätzliche Pausen", "Weniger Meetings", "Meetings nur mit Agenda", "Protokolle nach Meetings", "Aufgaben in kleinen Schritten", "Erinnerungen / Prompts", "Einzelgespräche statt Gruppenrunden"] },
-  { title: "Neurodivergenz & Reizregulation", tags: ["Reizarme Umgebung", "Ruhiger Arbeitsplatz", "Einzelbüro", "Ruheraum", "Noise-Cancelling erlaubt", "Kopfhörer erlaubt", "Keine Kamera-Pflicht", "Wenig Kontextwechsel", "Ununterbrochene Fokuszeit", "Visuelle Planungs-Tools", "Schriftliche Briefings", "Keine spontanen Anrufe", "Vorbereitung vor Meetings", "Masking-freie Kultur", "Psychologische Sicherheit", "Sensorische Rücksichtnahme", "Reduzierte soziale Pflichttermine", "Weniger Lärm", "Weniger grelles Licht", "Weniger Gerüche", "Parfümarme Umgebung", "Reizarme Dekoration", "Fester Sitzplatz", "Rückzugsort bei Überlastung"] },
-  { title: "Mobilität & körperliche Barrierefreiheit", tags: ["Barrierefreier Eingang", "Aufzug", "Rampe", "Automatische Türen", "Breite Wege / Türen", "Rollstuhlgerechter Arbeitsplatz", "Höhenverstellbarer Tisch", "Ergonomischer Stuhl", "Angepasste Arbeitsmittel", "Kurze Wege im Büro", "Parkplatz in der Nähe", "Barrierefreie Toilette", "Homeoffice statt Pendeln", "Hebe- / Tragelast anpassen", "Arbeitsplatz nah an wichtigen Räumen", "Evakuierungsplan / Notfallhilfe"] },
-  { title: "Sehen", tags: ["Screenreader-kompatible Tools", "Tastaturbedienbare Software", "Braille-Unterstützung", "Große Schrift", "Hoher Kontrast", "Vergrößerungssoftware", "Vorlesefunktionen", "Dokumente in zugänglichen Formaten", "Alt-Text in internen Materialien", "Gute Beleuchtung", "Blendfreies Licht", "Orientierungshilfen im Raum"] },
-  { title: "Hören", tags: ["Untertitel / Captions", "Live-Transkription", "Gebärdensprachdolmetschung", "Schriftliche Zusammenfassungen", "Chat statt Telefon", "Visuelle Alarme", "Assistive Hörtechnik", "Ruhige Meetingumgebung", "Gute Mikrofonqualität", "Sprechdisziplin im Meeting", "Eine Person spricht gleichzeitig"] },
-  { title: "Lernen & Verstehen", tags: ["Einfache Sprache", "Leichte Sprache", "Schritt-für-Schritt-Anleitungen", "Wiederholbare Arbeitsabläufe", "Visuelle Anleitungen", "Beispiele / Musteraufgaben", "Mehr Zeit zum Lernen", "Praktische Demonstrationen", "Begleitete Einarbeitung", "Verständnis-Checks ohne Druck"] },
-  { title: "Energie, Gesundheit & Belastung", tags: ["Flexible Startzeiten", "Späterer Arbeitsbeginn", "Pacing / Energiemanagement", "Sitz- und Stehoption", "Möglichkeit zum Liegen / Ausruhen", "Temperaturkontrolle", "Zugang zu Wasser / Snacks / Medikamenten", "Termine um Behandlungen herum", "Reduzierte Reisetätigkeit", "Arbeiten von zuhause bei Schub / Erschöpfung"] },
-];
-
-const createTagField = () => ({ tags: [], custom: "" });
-
-const EMPTY_PROFILE = {
-  full_name: "",
-  headline: "",
-  strengths: createTagField(),
-  work_style: createTagField(),
-  needs: createTagField(),
-  skills: createTagField(),
-  work_model: "",
-  looking_for_work: false,
-};
-
-function parseStoredField(value) {
-  if (!value) return createTagField();
-  try {
-    const parsed = JSON.parse(value);
-    if (parsed && Array.isArray(parsed.tags)) {
-      return { tags: parsed.tags, custom: parsed.custom || "" };
-    }
-  } catch (error) {
-    return { tags: [], custom: typeof value === "string" ? value : "" };
-  }
-  return createTagField();
-}
-
-function serializeField(value) {
-  return JSON.stringify({ tags: value?.tags || [], custom: value?.custom || "" });
-}
-
-function TagField({ label, options, value, onChange, placeholder, categories }) {
-  const selectedTags = value?.tags || [];
-  const customText = value?.custom || "";
-
-  const toggleTag = (tag) => {
-    const nextTags = selectedTags.includes(tag)
-      ? selectedTags.filter((item) => item !== tag)
-      : [...selectedTags, tag];
-    onChange({ tags: nextTags, custom: customText });
-  };
-
-  const renderTagButton = (tag) => {
-    const selected = selectedTags.includes(tag);
-    return (
-      <button key={tag} type="button" onClick={() => toggleTag(tag)} style={{ border: selected ? "1.5px solid #2C2C2C" : "1.5px solid #E2DBD0", background: selected ? "#2C2C2C" : "#F8F4ED", color: selected ? "#F5F0E8" : "#444", borderRadius: 999, padding: "8px 12px", fontFamily: "Source Sans 3", fontSize: 13, cursor: "pointer" }}>
-        {tag}
-      </button>
-    );
-  };
-
-  return (
-    <div>
-      <label style={{ fontFamily: "Source Sans 3", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px", color: "#888", display: "block", marginBottom: 8 }}>
-        {label}
-      </label>
-
-      {categories ? (
-        <div style={{ display: "grid", gap: 16, marginBottom: 12 }}>
-          {categories.map((category) => (
-            <div key={category.title} style={{ background: "#FCFAF6", border: "1px solid #EAE2D8", borderRadius: 16, padding: 14 }}>
-              <div style={{ fontFamily: "Source Sans 3", fontSize: 12, fontWeight: 700, color: "#666", marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.8px" }}>
-                {category.title}
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {category.tags.map(renderTagButton)}
-              </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>
-          {options.map(renderTagButton)}
-        </div>
-      )}
-
-      <textarea value={customText} onChange={(e) => onChange({ tags: selectedTags, custom: e.target.value })} placeholder={placeholder} rows={3}
-        style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: "1.5px solid #E2DBD0", fontFamily: "Source Sans 3", fontSize: 14, background: "#F8F4ED", outline: "none", boxSizing: "border-box", resize: "vertical", minHeight: 90 }} />
-    </div>
-  );
-}
 
 function AuthScreen() {
   const [mode, setMode] = useState("login");
@@ -142,14 +34,14 @@ function AuthScreen() {
     } else {
       const { error } = await supabase.auth.signUp({ email, password });
       if (error) setMessage("Fehler: " + error.message);
-      else setMessage("✓ Bestätigungs-E-Mail gesendet. Bitte prüfe dein Postfach.");
+      else setMessage("✓ Bestätigungs-E-Mail gesendet! Bitte prüfe dein Postfach.");
     }
     setLoading(false);
   };
 
   return (
     <div style={{ minHeight: "100vh", background: "#F5F0E8", display: "flex", alignItems: "center", justifyContent: "center", padding: 24 }}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap');`}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500&display=swap');`}</style>
       <div style={{ background: "white", borderRadius: 24, padding: 40, width: "100%", maxWidth: 400, boxShadow: "0 4px 24px rgba(0,0,0,0.08)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 32 }}>
           <div style={{ width: 36, height: 36, background: "#2C2C2C", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -160,15 +52,17 @@ function AuthScreen() {
         <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 26, fontWeight: 700, marginBottom: 8 }}>
           {mode === "login" ? "Willkommen zurück" : "Jetzt registrieren"}
         </h2>
-        <p style={{ fontFamily: "Source Sans 3", color: "#888", fontSize: 14, marginBottom: 28 }}>Inklusiv. Für uns. Ab sofort.</p>
+        <p style={{ fontFamily: "Source Sans 3", color: "#888", fontSize: 14, marginBottom: 28 }}>
+          Inklusiv. Für uns. Ab sofort.
+        </p>
         <div style={{ marginBottom: 16 }}>
           <label style={{ fontFamily: "Source Sans 3", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px", color: "#888", display: "block", marginBottom: 6 }}>E-Mail</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="deine@email.de"
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="deine@email.de"
             style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: "1.5px solid #E2DBD0", fontFamily: "Source Sans 3", fontSize: 14, background: "#F5F0E8", outline: "none", boxSizing: "border-box" }} />
         </div>
         <div style={{ marginBottom: 24 }}>
           <label style={{ fontFamily: "Source Sans 3", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px", color: "#888", display: "block", marginBottom: 6 }}>Passwort</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••"
+          <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••"
             style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: "1.5px solid #E2DBD0", fontFamily: "Source Sans 3", fontSize: 14, background: "#F5F0E8", outline: "none", boxSizing: "border-box" }} />
         </div>
         {message && (
@@ -197,9 +91,6 @@ export default function App() {
   const [savedJobs, setSavedJobs] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState(EMPTY_PROFILE);
-  const [saveMessage, setSaveMessage] = useState("");
-  const [profileLoading, setProfileLoading] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -212,65 +103,12 @@ export default function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  useEffect(() => {
-    if (user) loadProfile();
-    else { setProfile(EMPTY_PROFILE); setSaveMessage(""); }
-  }, [user]); // eslint-disable-line
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
-  async function loadProfile() {
-    setProfileLoading(true);
-    setSaveMessage("");
-    const { data: { user: currentUser } } = await supabase.auth.getUser();
-    if (!currentUser) { setProfileLoading(false); return; }
-    const { data, error } = await supabase.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
-    if (error) { console.error(error); setSaveMessage("Profil konnte nicht geladen werden."); setProfileLoading(false); return; }
-    if (data) {
-      setProfile({
-        full_name: data.full_name || "",
-        headline: data.headline || "",
-        strengths: parseStoredField(data.strengths),
-        work_style: parseStoredField(data.work_style),
-        needs: parseStoredField(data.needs),
-        skills: parseStoredField(data.skills),
-        work_model: data.work_model || "",
-        looking_for_work: !!data.looking_for_work,
-      });
-    } else {
-      setProfile(EMPTY_PROFILE);
-    }
-    setProfileLoading(false);
-  }
-
-  async function saveProfile() {
-    setSaveMessage("");
-    const { data: { user: currentUser } } = await supabase.auth.getUser();
-    if (!currentUser) { setSaveMessage("Bitte zuerst einloggen."); return; }
-    const { error } = await supabase.from("profiles").upsert({
-      id: currentUser.id,
-      full_name: profile.full_name,
-      headline: profile.headline,
-      strengths: serializeField(profile.strengths),
-      work_style: serializeField(profile.work_style),
-      needs: serializeField(profile.needs),
-      skills: serializeField(profile.skills),
-      work_model: profile.work_model,
-      looking_for_work: profile.looking_for_work,
-    }, { onConflict: "id" });
-    if (error) { console.error(error); setSaveMessage("Speichern hat nicht funktioniert."); }
-    else setSaveMessage("Profil gespeichert.");
-  }
-
-  const handleLogout = async () => { await supabase.auth.signOut(); };
-  const toggleSave = (id) => { setSavedJobs((prev) => prev.includes(id) ? prev.filter((j) => j !== id) : [...prev, id]); };
-
-  const inputStyle = { width: "100%", padding: "12px 16px", borderRadius: 12, border: "1.5px solid #E2DBD0", fontFamily: "Source Sans 3", fontSize: 14, background: "#F8F4ED", outline: "none", boxSizing: "border-box" };
-  const labelStyle = { fontFamily: "Source Sans 3", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px", color: "#888", display: "block", marginBottom: 6 };
-
-  const renderTagFieldPreview = (field) => {
-    const tags = field?.tags || [];
-    const custom = field?.custom?.trim() || "";
-    const parts = [...tags, custom].filter(Boolean);
-    return parts.length ? parts.join(" · ") : "Noch nichts eingetragen.";
+  const toggleSave = (id) => {
+    setSavedJobs(prev => prev.includes(id) ? prev.filter(j => j !== id) : [...prev, id]);
   };
 
   if (loading) return (
@@ -284,7 +122,7 @@ export default function App() {
   return (
     <div style={{ fontFamily: "'Georgia', serif", background: "#F5F0E8", minHeight: "100vh", color: "#2C2C2C" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Sans+3:wght@300;400;500&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
         .nav-item { cursor: pointer; padding: 8px 16px; border-radius: 20px; transition: all 0.2s; font-family: 'Source Sans 3', sans-serif; font-size: 14px; font-weight: 500; background: none; border: none; }
         .nav-item:hover { background: rgba(0,0,0,0.07); }
@@ -311,7 +149,7 @@ export default function App() {
             <span style={{ fontFamily: "'Playfair Display', serif", fontWeight: 700, fontSize: 20 }}>mole</span>
           </div>
           <nav style={{ display: "flex", gap: 4 }}>
-            {NAV_ITEMS.map((item) => (
+            {NAV_ITEMS.map(item => (
               <button key={item} className={`nav-item${activeNav === item ? " active" : ""}`} onClick={() => { setActiveNav(item); setSelectedJob(null); }}>
                 {item}
               </button>
@@ -330,7 +168,7 @@ export default function App() {
           <div>
             <div style={{ background: "white", borderRadius: 20, padding: 32, marginBottom: 48, boxShadow: "0 2px 8px rgba(0,0,0,0.06)", textAlign: "center" }}>
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 700, marginBottom: 8 }}>Jetzt vormerken lassen</h2>
-              <p style={{ fontFamily: "Source Sans 3", color: "#888", fontSize: 15, marginBottom: 24 }}>Sei dabei wenn mole startet – trag dich in die Warteliste ein.</p>
+              <p style={{ fontFamily: "Source Sans 3", color: "#888", fontSize: 15, marginBottom: 24 }}>Sei dabei wenn mole startet – trag dich in die Warteliste ein!</p>
               <iframe src={WAITLIST_URL} width="100%" height="305" frameBorder="0" scrolling="auto" title="Waitlist" style={{ maxWidth: 540, display: "block", margin: "0 auto" }}></iframe>
             </div>
             <div style={{ marginBottom: 48, maxWidth: 600 }}>
@@ -344,7 +182,7 @@ export default function App() {
               </p>
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20, marginBottom: 48 }}>
-              {[{ n: "247", label: "Inklusive Firmen", color: "#7C9E87" }, { n: "1.840", label: "Offene Stellen", color: "#8B7EC8" }, { n: "12.500+", label: "Mitglieder", color: "#D4956A" }].map((s) => (
+              {[{ n: "247", label: "Inklusive Firmen", color: "#7C9E87" }, { n: "1.840", label: "Offene Stellen", color: "#8B7EC8" }, { n: "12.500+", label: "Mitglieder", color: "#D4956A" }].map(s => (
                 <div key={s.label} style={{ background: "white", borderRadius: 16, padding: "28px 24px", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
                   <div style={{ fontFamily: "'Playfair Display', serif", fontSize: 36, fontWeight: 700, color: s.color, marginBottom: 4 }}>{s.n}</div>
                   <div style={{ fontFamily: "Source Sans 3", fontSize: 14, color: "#888" }}>{s.label}</div>
@@ -353,7 +191,7 @@ export default function App() {
             </div>
             <p className="section-label">Passend für dich</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 16 }}>
-              {JOBS.slice(0, 2).map((job) => (
+              {JOBS.slice(0, 2).map(job => (
                 <div key={job.id} className="job-card" onClick={() => { setActiveNav("Jobs"); setSelectedJob(job); }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 12 }}>
                     <div style={{ width: 44, height: 44, borderRadius: 12, background: job.color + "22" }} />
@@ -361,7 +199,7 @@ export default function App() {
                   </div>
                   <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600, marginBottom: 4 }}>{job.title}</h3>
                   <p style={{ fontFamily: "Source Sans 3", fontSize: 13, color: "#888", marginBottom: 12 }}>{job.company} · {job.type}</p>
-                  <div>{job.tags.slice(0, 3).map((t) => <span key={t} className="tag">{t}</span>)}</div>
+                  <div>{job.tags.slice(0, 3).map(t => <span key={t} className="tag">{t}</span>)}</div>
                 </div>
               ))}
             </div>
@@ -377,7 +215,7 @@ export default function App() {
               <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 700, marginBottom: 8 }}>Offene Stellen</h2>
               <p style={{ fontFamily: "Source Sans 3", fontSize: 14, color: "#888", marginBottom: 24 }}>Gefiltert nach deinen Bedürfnissen</p>
               <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-                {JOBS.map((job) => (
+                {JOBS.map(job => (
                   <div key={job.id} className={`job-card${selectedJob?.id === job.id ? " selected" : ""}`} onClick={() => setSelectedJob(job)}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                       <div style={{ display: "flex", gap: 14 }}>
@@ -394,7 +232,7 @@ export default function App() {
                         </button>
                       </div>
                     </div>
-                    <div style={{ marginTop: 12 }}>{job.tags.map((t) => <span key={t} className="tag">{t}</span>)}</div>
+                    <div style={{ marginTop: 12 }}>{job.tags.map(t => <span key={t} className="tag">{t}</span>)}</div>
                   </div>
                 ))}
               </div>
@@ -405,7 +243,7 @@ export default function App() {
                 <p style={{ fontFamily: "Source Sans 3", color: "#888", fontSize: 14, marginBottom: 20 }}>{selectedJob.company} · {selectedJob.type}</p>
                 <p style={{ fontFamily: "Source Sans 3", fontSize: 15, color: "#444", lineHeight: 1.75, marginBottom: 24 }}>{selectedJob.desc}</p>
                 <p className="section-label">Inklusive Arbeitsbedingungen</p>
-                {selectedJob.tags.map((t) => (
+                {selectedJob.tags.map(t => (
                   <div key={t} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                     <div style={{ width: 8, height: 8, borderRadius: "50%", background: selectedJob.color }} />
                     <span style={{ fontFamily: "Source Sans 3", fontSize: 14 }}>{t}</span>
@@ -427,7 +265,7 @@ export default function App() {
             <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 32, fontWeight: 700, marginBottom: 8 }}>Inklusive Firmen</h2>
             <p style={{ fontFamily: "Source Sans 3", color: "#888", fontSize: 15, marginBottom: 36 }}>Geprüfte Arbeitgeber, die neurodivergente Menschen wirklich willkommen heißen</p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24 }}>
-              {COMPANIES.map((c) => (
+              {COMPANIES.map(c => (
                 <div key={c.id} className="company-card">
                   <div style={{ display: "flex", gap: 14, alignItems: "center", marginBottom: 20 }}>
                     <div style={{ width: 52, height: 52, borderRadius: 14, background: c.color + "22", flexShrink: 0 }} />
@@ -439,7 +277,7 @@ export default function App() {
                   <span style={{ background: c.color + "22", color: c.color, padding: "4px 12px", borderRadius: 12, fontSize: 12, fontFamily: "Source Sans 3", fontWeight: 600 }}>✓ {c.badge}</span>
                   <div style={{ margin: "16px 0" }}>
                     <p className="section-label">Was diese Firma bietet</p>
-                    {c.checks.map((check) => (
+                    {c.checks.map(check => (
                       <div key={check} style={{ display: "flex", gap: 8, marginBottom: 6 }}>
                         <span style={{ color: c.color }}>✓</span>
                         <span style={{ fontFamily: "Source Sans 3", fontSize: 13, color: "#555" }}>{check}</span>
@@ -467,8 +305,8 @@ export default function App() {
                 { title: "Bewerbungsgesprächs-Hilfe", desc: "Gemeinsam üben, Fragen klären, Nerven beruhigen", members: 1456, color: "#D4956A", posts: 76 },
                 { title: "Arbeitsrechte & Nachteilsausgleich", desc: "Rechtliche Infos, Erfahrungen mit Arbeitgebern", members: 987, color: "#5B9BAD", posts: 54 },
                 { title: "Erfolgsgeschichten", desc: "Inspirierende Jobs und Momente teilen", members: 3102, color: "#C4A86E", posts: 203 },
-                { title: "Remote Work", desc: "Tipps für produktives, neurodiv-freundliches Homeoffice", members: 2210, color: "#A07890", posts: 119 },
-              ].map((group) => (
+                { title: "Remote Work", desc: "Tipps für produktives, neurodiv-freundliches Homeoffice", members: 2210, color: "#A07890", posts: 119 }
+              ].map(group => (
                 <div key={group.title} className="company-card" style={{ cursor: "pointer" }}>
                   <div style={{ display: "flex", gap: 12 }}>
                     <div style={{ width: 48, height: 48, borderRadius: 12, background: group.color + "22", flexShrink: 0 }} />
@@ -486,87 +324,28 @@ export default function App() {
         )}
 
         {activeNav === "Profil" && (
-          <div style={{ maxWidth: 760, margin: "0 auto" }}>
+          <div style={{ maxWidth: 720, margin: "0 auto" }}>
             <div style={{ background: "white", borderRadius: 20, padding: 32, marginBottom: 20, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
               <div style={{ display: "flex", gap: 20, alignItems: "center", marginBottom: 24 }}>
                 <div style={{ width: 72, height: 72, borderRadius: "50%", background: "#8B7EC8", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ color: "white", fontSize: 26, fontWeight: 600, fontFamily: "Source Sans 3" }}>
-                    {(profile.full_name?.[0] || user.email?.[0] || "M").toUpperCase()}
-                  </span>
+                  <span style={{ color: "white", fontSize: 26, fontWeight: 600, fontFamily: "Source Sans 3" }}>{user.email[0].toUpperCase()}</span>
                 </div>
                 <div>
-                  <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700 }}>{profile.full_name || user.email}</h2>
-                  <p style={{ fontFamily: "Source Sans 3", fontSize: 14, color: "#888" }}>{profile.headline || "Mole-Mitglied"}</p>
+                  <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700 }}>{user.email}</h2>
+                  <p style={{ fontFamily: "Source Sans 3", fontSize: 14, color: "#888" }}>Mole-Mitglied</p>
                 </div>
               </div>
-
-              <div style={{ display: "grid", gap: 18 }}>
-                <div>
-                  <label style={labelStyle}>Name</label>
-                  <input type="text" value={profile.full_name} onChange={(e) => setProfile({ ...profile, full_name: e.target.value })} placeholder="Dein Name" style={inputStyle} />
-                </div>
-                <div>
-                  <label style={labelStyle}>Headline</label>
-                  <input type="text" value={profile.headline} onChange={(e) => setProfile({ ...profile, headline: e.target.value })} placeholder="Zum Beispiel: UX Research mit Fokus auf Barrierefreiheit" style={inputStyle} />
-                </div>
-
-                <TagField label="Deine Stärken" options={TAG_OPTIONS.strengths} value={profile.strengths} onChange={(v) => setProfile({ ...profile, strengths: v })} placeholder="Optional: weitere Stärken frei ergänzen" />
-                <TagField label="Wie arbeitest du am liebsten?" options={TAG_OPTIONS.work_style} value={profile.work_style} onChange={(v) => setProfile({ ...profile, work_style: v })} placeholder="Optional: deine Arbeitsweise frei ergänzen" />
-                <TagField label="Was brauchst du, um gut arbeiten zu können?" options={TAG_OPTIONS.needs} categories={NEED_CATEGORIES} value={profile.needs} onChange={(v) => setProfile({ ...profile, needs: v })} placeholder="Optional: weitere Bedürfnisse frei ergänzen" />
-                <TagField label="Skills" options={TAG_OPTIONS.skills} value={profile.skills} onChange={(v) => setProfile({ ...profile, skills: v })} placeholder="Optional: weitere Skills frei ergänzen" />
-
-                <div>
-                  <label style={labelStyle}>Arbeitsmodell</label>
-                  <input type="text" value={profile.work_model} onChange={(e) => setProfile({ ...profile, work_model: e.target.value })} placeholder="Remote, Hybrid oder Vor Ort" style={inputStyle} />
-                </div>
-
-                <label style={{ display: "flex", alignItems: "center", gap: 10, fontFamily: "Source Sans 3", fontSize: 14, color: "#444" }}>
-                  <input type="checkbox" checked={profile.looking_for_work} onChange={(e) => setProfile({ ...profile, looking_for_work: e.target.checked })} />
-                  Ich suche gerade aktiv
-                </label>
-
-                {profileLoading && <div style={{ padding: "12px 16px", borderRadius: 12, background: "#F3F4F6", color: "#666", fontFamily: "Source Sans 3", fontSize: 13 }}>Profil wird geladen...</div>}
-                {saveMessage && (
-                  <div style={{ padding: "12px 16px", borderRadius: 12, background: saveMessage.includes("nicht") ? "#FEE2E2" : "#EEF7F1", color: saveMessage.includes("nicht") ? "#DC2626" : "#2D7A4F", fontFamily: "Source Sans 3", fontSize: 13 }}>
-                    {saveMessage}
-                  </div>
-                )}
-
-                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                  <button className="btn-primary" onClick={saveProfile}>Profil speichern</button>
-                  <button className="btn-outline" onClick={handleLogout}>Ausloggen</button>
-                </div>
+              <div style={{ display: "flex", gap: 12 }}>
+                <button className="btn-primary">Profil bearbeiten</button>
+                <button className="btn-outline" onClick={handleLogout}>Ausloggen</button>
               </div>
             </div>
-
-            <div style={{ background: "white", borderRadius: 20, padding: 28, boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}>
-              <p className="section-label">Vorschau</p>
-              <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 24, fontWeight: 700, marginBottom: 8 }}>{profile.full_name || "Dein Name"}</h3>
-              <p style={{ fontFamily: "Source Sans 3", fontSize: 15, color: "#666", marginBottom: 20 }}>{profile.headline || "Deine Headline erscheint hier."}</p>
-              <div style={{ display: "grid", gap: 18 }}>
-                {[
-                  { label: "Stärken", field: profile.strengths },
-                  { label: "Arbeitsweise", field: profile.work_style },
-                  { label: "Bedürfnisse", field: profile.needs },
-                  { label: "Skills", field: profile.skills },
-                ].map(({ label, field }) => (
-                  <div key={label}>
-                    <p className="section-label">{label}</p>
-                    <p style={{ fontFamily: "Source Sans 3", lineHeight: 1.7, color: "#444" }}>{renderTagFieldPreview(field)}</p>
-                  </div>
-                ))}
-                <div>
-                  <p className="section-label">Arbeitsmodell</p>
-                  <p style={{ fontFamily: "Source Sans 3", lineHeight: 1.7, color: "#444" }}>{profile.work_model || "Noch nichts eingetragen."}</p>
-                </div>
-                <div>
-                  <p className="section-label">Aktuell</p>
-                  <p style={{ fontFamily: "Source Sans 3", lineHeight: 1.7, color: "#444" }}>{profile.looking_for_work ? "Sucht aktuell aktiv" : "Sucht aktuell nicht aktiv"}</p>
-                </div>
-              </div>
+            <div style={{ background: "white", borderRadius: 20, padding: 28, boxShadow: "0 2px 8px rgba(0,0,0,0.06)", textAlign: "center" }}>
+              <p style={{ fontFamily: "Source Sans 3", color: "#888", fontSize: 15 }}>Dein Profil wird bald hier erscheinen 🌿</p>
             </div>
           </div>
         )}
+
       </main>
     </div>
   );
