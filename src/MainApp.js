@@ -36,15 +36,16 @@ function TagField({ label, options, value, onChange, placeholder, categories }) 
 
   return (
     <div>
-      <button type="button" onClick={() => setOpen(!open)} style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", background: "#1a1a1a", border: "1.5px solid #333", borderRadius: 10, cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif", color: "white", fontSize: 14 }}>
+      <button type="button" onClick={() => setOpen(!open)} style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "12px 16px", background: "#1a1a1a", border: "1.5px solid #ff69b4", borderRadius: 10, cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif", color: "white", fontSize: 14 }}>
         <span style={{ fontWeight: 600, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.08em", color: "#888" }}>{label}</span>
         <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {selectedCount > 0 && <span style={{ background: "#A855F7", color: "white", borderRadius: "50%", width: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700 }}>{selectedCount}</span>}
-          <span style={{ color: "#A855F7", fontSize: 18 }}>{open ? "−" : "+"}</span>
+          <span style={{ color: "#4169e1", fontSize: 18 }}>{open ? "−" : "+"}</span>
         </span>
       </button>
+      
       {open && (
-        <div style={{ background: "#111", border: "1.5px solid #333", borderTop: "none", borderRadius: "0 0 10px 10px", padding: 16 }}>
+        <div style={{ background: "#ff7f50", border: "1.5px solid #40e0d0", borderTop: "none", borderRadius: "0 0 10px 10px", padding: 16 }}>
           {categories ? (
             <div style={{ display: "grid", gap: 12 }}>
               {categories.map(cat => (
@@ -53,7 +54,7 @@ function TagField({ label, options, value, onChange, placeholder, categories }) 
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {cat.tags.map(tag => {
                       const sel = selectedTags.includes(tag);
-                      return <button key={tag} type="button" onClick={() => toggleTag(tag)} style={{ padding: "5px 12px", borderRadius: 6, border: `1px solid ${sel ? "#A855F7" : "#333"}`, background: sel ? "#A855F722" : "transparent", color: sel ? "#A855F7" : "#888", fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, cursor: "pointer" }}>{tag}</button>;
+                      return <button key={tag} type="button" onClick={() => toggleTag(tag)} style={{ padding: "5px 12px", borderRadius: 6, border: `1px solid ${sel ? "#A855F7" : "#ff69b4"}`, background: sel ? "#A855F722" : "transparent", color: sel ? "#A855F7" : "#888", fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, cursor: "pointer" }}>{tag}</button>;
                     })}
                   </div>
                 </div>
@@ -63,12 +64,12 @@ function TagField({ label, options, value, onChange, placeholder, categories }) 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
               {options.map(tag => {
                 const sel = selectedTags.includes(tag);
-                return <button key={tag} type="button" onClick={() => toggleTag(tag)} style={{ padding: "5px 12px", borderRadius: 6, border: `1px solid ${sel ? "#A855F7" : "#333"}`, background: sel ? "#A855F722" : "transparent", color: sel ? "#A855F7" : "#888", fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, cursor: "pointer" }}>{tag}</button>;
+                return <button key={tag} type="button" onClick={() => toggleTag(tag)} style={{ padding: "5px 12px", borderRadius: 6, border: `1px solid ${sel ? "#A855F7" : "#ff69b4"}`, background: sel ? "#A855F722" : "transparent", color: sel ? "#A855F7" : "#888", fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, cursor: "pointer" }}>{tag}</button>;
               })}
             </div>
           )}
           <textarea value={customText} onChange={e => onChange({ tags: selectedTags, custom: e.target.value })} placeholder={placeholder} rows={2}
-            style={{ width: "100%", padding: "10px 14px", background: "#1a1a1a", border: "1.5px solid #333", borderRadius: 8, color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, resize: "vertical", marginTop: 12 }} />
+            style={{ width: "100%", padding: "10px 14px", background: "#1a1a1a", border: "1.5px solid #ff69b4", borderRadius: 8, color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, resize: "vertical", marginTop: 12 }} />
         </div>
       )}
     </div>
@@ -232,7 +233,7 @@ export default function MainApp() {
   const handleLogout = async () => { await supabase.auth.signOut(); };
   const avatarInitial = (profile.full_name?.[0] || user?.email?.[0] || "D").toUpperCase();
 
-  const inp = (extra = {}) => ({ width: "100%", padding: "12px 16px", background: "#1a1a1a", border: "1.5px solid #333", borderRadius: 10, color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, ...extra });
+  const inp = (extra = {}) => ({ width: "100%", padding: "12px 16px", background: "#1a1a1a", border: "1.5px solid #ff69b4", borderRadius: 10, color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, ...extra });
   const lbl = { display: "block", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#888", marginBottom: 6 };
 
   if (loading) return (
@@ -268,8 +269,8 @@ export default function MainApp() {
               <div style={{ position: "absolute", bottom: 0, right: 0, width: 22, height: 22, borderRadius: "50%", background: "#4ade80", opacity: 0.85 }} />
             </div>
             <div>
-              <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: "-0.5px" }}>Diffusion</span>
-              <span style={{ fontSize: 10, color: "#444", display: "block", letterSpacing: "0.05em" }}>Different.Inclusion</span>
+              <span style={{ fontSize: 30, fontWeight: 700, letterSpacing: "-0.5px" }}>Diffusion</span>
+              <span style={{ fontSize: 20, color: "#444", display: "block", letterSpacing: "0.05em" }}>Different.Inclusion</span>
             </div>
           </div>
 
@@ -284,13 +285,13 @@ export default function MainApp() {
 
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt="avatar" style={{ width: 34, height: 34, borderRadius: "50%", objectFit: "cover", cursor: "pointer", border: "2px solid #A855F7" }} onClick={() => setActiveNav("profil")} />
+              <img src={profile.avatar_url} alt="avatar" style={{ width: 50, height: 50, borderRadius: "50%", objectFit: "cover", cursor: "pointer", border: "2px solid #A855F7" }} onClick={() => setActiveNav("profil")} />
             ) : (
               <div style={{ width: 34, height: 34, borderRadius: "50%", background: "#A855F7", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: 13, fontWeight: 700 }} onClick={() => setActiveNav("profil")}>
                 {avatarInitial}
               </div>
             )}
-            <button onClick={handleLogout} style={{ background: "none", border: "1px solid #333", borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontSize: 12, color: "#666" }}>Logout</button>
+            <button onClick={handleLogout} style={{ background: "none", border: "1px solid #ff69b4", borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontSize: 12, color: "#666" }}>Logout</button>
           </div>
         </div>
       </header>
@@ -311,7 +312,7 @@ export default function MainApp() {
               <div style={{ display: "flex", gap: 10 }}>
                 {profileMode === "view" ? (
                   <>
-                    <button onClick={() => { copyProfileLink(); }} style={{ background: "transparent", border: "1.5px solid #333", color: "#aaa", padding: "8px 16px", borderRadius: 8, cursor: "pointer", fontSize: 13 }}>
+                    <button onClick={() => { copyProfileLink(); }} style={{ background: "transparent", border: "1.5px solid #ff69b4", color: "#aaa", padding: "8px 16px", borderRadius: 8, cursor: "pointer", fontSize: 13 }}>
                       {copyMessage || "🔗 Link teilen"}
                     </button>
                     <button onClick={() => setProfileMode("edit")} style={{ background: "#A855F7", border: "none", color: "white", padding: "8px 16px", borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 700 }}>
@@ -320,7 +321,7 @@ export default function MainApp() {
                   </>
                 ) : (
                   <>
-                    <button onClick={() => setProfileMode("view")} style={{ background: "transparent", border: "1.5px solid #333", color: "#aaa", padding: "8px 16px", borderRadius: 8, cursor: "pointer", fontSize: 13 }}>
+                    <button onClick={() => setProfileMode("view")} style={{ background: "transparent", border: "1.5px solid #ff69b4", color: "#aaa", padding: "8px 16px", borderRadius: 8, cursor: "pointer", fontSize: 13 }}>
                       Abbrechen
                     </button>
                     <button onClick={saveProfile} style={{ background: "#4ade80", border: "none", color: "#0A0A0A", padding: "8px 20px", borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 700 }}>
@@ -335,7 +336,7 @@ export default function MainApp() {
             {profileMode === "edit" && (
               <div className="edit-banner" style={{ background: "#A855F722", border: "2px solid #A855F7", borderRadius: 10, padding: "10px 16px", marginBottom: 20, display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 18 }}>✏️</span>
-                <p style={{ fontSize: 14, color: "#A855F7", fontWeight: 600 }}>Du bist im Bearbeitungsmodus — Änderungen werden erst nach "Speichern" übernommen.</p>
+                <p style={{ fontSize: 14, color: "#4169e1", fontWeight: 600 }}>Du bist im Bearbeitungsmodus — Änderungen werden erst nach "Speichern" übernommen.</p>
               </div>
             )}
 
@@ -372,7 +373,7 @@ export default function MainApp() {
 
                   {/* Basis */}
                   <div style={{ borderTop: "1px solid #222", paddingTop: 20 }}>
-                    <p style={{ fontSize: 14, fontWeight: 700, color: "#A855F7", marginBottom: 16 }}>Wer ich bin</p>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: "#4169e1", marginBottom: 16 }}>Wer ich bin</p>
                     <div style={{ display: "grid", gap: 14 }}>
                       <div><label style={lbl}>Name</label><input type="text" value={profile.full_name} onChange={e => setProfile({ ...profile, full_name: e.target.value })} placeholder="Dein Name" style={inp()} /></div>
                       <div><label style={lbl}>Headline</label><input type="text" value={profile.headline} onChange={e => setProfile({ ...profile, headline: e.target.value })} placeholder="z.B. UX-Designerin mit Fokus auf Barrierefreiheit" style={inp()} /></div>
@@ -403,7 +404,7 @@ export default function MainApp() {
 
                   {/* Bedürfnisse */}
                   <div style={{ borderTop: "1px solid #222", paddingTop: 20 }}>
-                    <p style={{ fontSize: 14, fontWeight: 700, color: "#A855F7", marginBottom: 16 }}>Was ich brauche</p>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: "#4169e1", marginBottom: 16 }}>Was ich brauche</p>
                     <TagField label="Bedürfnisse am Arbeitsplatz" options={TAG_OPTIONS.needs} categories={NEED_CATEGORIES} value={profile.needs} onChange={v => setProfile({ ...profile, needs: v })} placeholder="Weitere Bedürfnisse..." />
                   </div>
 
@@ -449,7 +450,7 @@ export default function MainApp() {
                             return <button key={tag} type="button" onClick={() => {
                               const tags = currentTags.includes(tag) ? currentTags.filter(t => t !== tag) : [...currentTags, tag];
                               setProfile({ ...profile, rolemodel_tags: tags.join(", ") });
-                            }} style={{ padding: "5px 12px", borderRadius: 6, border: `1px solid ${sel ? "#facc15" : "#333"}`, background: sel ? "#facc1522" : "transparent", color: sel ? "#facc15" : "#666", fontSize: 12, cursor: "pointer" }}>{tag}</button>;
+                            }} style={{ padding: "5px 12px", borderRadius: 6, border: `1px solid ${sel ? "#facc15" : "#ff69b4"}`, background: sel ? "#facc1522" : "transparent", color: sel ? "#facc15" : "#666", fontSize: 12, cursor: "pointer" }}>{tag}</button>;
                           })}
                         </div>
                       </div>
@@ -473,8 +474,8 @@ export default function MainApp() {
 
                   <div style={{ display: "flex", gap: 12, paddingTop: 8 }}>
                     <button onClick={saveProfile} style={{ background: "#4ade80", border: "none", color: "#0A0A0A", padding: "12px 28px", borderRadius: 10, cursor: "pointer", fontSize: 15, fontWeight: 700 }}>✓ Profil speichern</button>
-                    <button onClick={() => setProfileMode("view")} style={{ background: "transparent", border: "1.5px solid #333", color: "#888", padding: "12px 20px", borderRadius: 10, cursor: "pointer", fontSize: 14 }}>Abbrechen</button>
-                    <button onClick={handleLogout} style={{ background: "transparent", border: "1.5px solid #333", color: "#666", padding: "12px 20px", borderRadius: 10, cursor: "pointer", fontSize: 14, marginLeft: "auto" }}>Ausloggen</button>
+                    <button onClick={() => setProfileMode("view")} style={{ background: "transparent", border: "1.5px solid #ff69b4", color: "#888", padding: "12px 20px", borderRadius: 10, cursor: "pointer", fontSize: 14 }}>Abbrechen</button>
+                    <button onClick={handleLogout} style={{ background: "transparent", border: "1.5px solid #ff69b4", color: "#666", padding: "12px 20px", borderRadius: 10, cursor: "pointer", fontSize: 14, marginLeft: "auto" }}>Ausloggen</button>
                   </div>
                 </div>
               </div>
@@ -536,8 +537,8 @@ export default function MainApp() {
             </div>
 
             <div style={{ background: "#141414", border: "1px solid #A855F744", borderRadius: 14, padding: "20px 24px", marginTop: 32 }}>
-              <p style={{ fontWeight: 700, fontSize: 15, marginBottom: 8, color: "#A855F7" }}>💡 Tipp: Profil-Link bei Bewerbungen mitschicken</p>
-              <p style={{ fontSize: 14, color: "#888", lineHeight: 1.6, marginBottom: 12 }}>Schick deinen Diffusion-Profillink direkt in der Bewerbung mit — inklusiv, ehrlich, ohne Stigma.</p>
+              <p style={{ fontWeight: 700, fontSize: 15, marginBottom: 8, color: "#4169e1" }}>💡 Tipp: Profil-Link bei Bewerbungen mitschicken</p>
+              <p style={{ fontSize: 14, color: "#888", lineHeight: 1.6, marginBottom: 15 }}>Schick deinen Diffusion-Profillink direkt in der Bewerbung mit — inklusiv, ehrlich, ohne Stigma.</p>
               <button onClick={() => { copyProfileLink(); setActiveNav("profil"); }} style={{ background: "#A855F7", border: "none", color: "white", padding: "10px 20px", borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 700 }}>
                 {copyMessage || "🔗 Meinen Profillink kopieren"}
               </button>
@@ -552,18 +553,18 @@ export default function MainApp() {
             <p style={{ fontSize: 15, color: "#666", marginBottom: 24 }}>Menschen die ihr inklusives Profil öffentlich teilen — als Inspiration und Ermutigung.</p>
 
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 28 }}>
-              <button onClick={() => setVorbildFilter("")} style={{ padding: "6px 14px", borderRadius: 20, border: "1px solid", borderColor: vorbildFilter === "" ? "#A855F7" : "#333", background: vorbildFilter === "" ? "#A855F722" : "transparent", color: vorbildFilter === "" ? "#A855F7" : "#666", cursor: "pointer", fontSize: 13 }}>
+              <button onClick={() => setVorbildFilter("")} style={{ padding: "6px 14px", borderRadius: 20, border: "1px solid", borderColor: vorbildFilter === "" ? "#A855F7" : "#ff69b4", background: vorbildFilter === "" ? "#A855F722" : "transparent", color: vorbildFilter === "" ? "#A855F7" : "#666", cursor: "pointer", fontSize: 13 }}>
                 Alle
               </button>
               {ROLEMODEL_TAGS.map(tag => (
-                <button key={tag} onClick={() => setVorbildFilter(tag)} style={{ padding: "6px 14px", borderRadius: 20, border: "1px solid", borderColor: vorbildFilter === tag ? "#A855F7" : "#333", background: vorbildFilter === tag ? "#A855F722" : "transparent", color: vorbildFilter === tag ? "#A855F7" : "#666", cursor: "pointer", fontSize: 13 }}>
+                <button key={tag} onClick={() => setVorbildFilter(tag)} style={{ padding: "6px 14px", borderRadius: 20, border: "1px solid", borderColor: vorbildFilter === tag ? "#A855F7" : "#ff69b4", background: vorbildFilter === tag ? "#A855F722" : "transparent", color: vorbildFilter === tag ? "#A855F7" : "#666", cursor: "pointer", fontSize: 13 }}>
                   {tag}
                 </button>
               ))}
             </div>
 
             {vorbilder.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "60px 20px", color: "#333" }}>
+              <div style={{ textAlign: "center", padding: "60px 20px", color: "#ff69b4" }}>
                 <p style={{ fontSize: 40, marginBottom: 16 }}>🌱</p>
                 <p style={{ fontSize: 16, marginBottom: 8 }}>Noch keine Vorbilder eingetragen.</p>
                 <p style={{ fontSize: 14, color: "#444" }}>Sei die erste Person — aktiviere "Als Vorbild sichtbar sein" in deinem Profil!</p>
@@ -592,7 +593,7 @@ export default function MainApp() {
                         </div>
                       </div>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                        {tags.map(tag => <span key={tag} style={{ padding: "3px 8px", borderRadius: 4, background: "#A855F722", color: "#A855F7", fontSize: 11, border: "1px solid #A855F744" }}>{tag}</span>)}
+                        {tags.map(tag => <span key={tag} style={{ padding: "3px 8px", borderRadius: 4, background: "#A855F722", color: "#4169e1", fontSize: 11, border: "1px solid #A855F744" }}>{tag}</span>)}
                         {v.looking_for_work && <span style={{ padding: "3px 8px", borderRadius: 4, background: "#4ade8022", color: "#4ade80", fontSize: 11, border: "1px solid #4ade8044" }}>Offen für Stellen</span>}
                       </div>
                     </a>
@@ -614,7 +615,7 @@ export default function MainApp() {
               <p style={{ fontSize: 14, fontWeight: 700, marginBottom: 14, color: "#aaa" }}>Neuer Beitrag</p>
               <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 10, marginBottom: 12 }} className="two-col">
                 <select value={beitragKategorie} onChange={e => setBeitragKategorie(e.target.value)}
-                  style={{ padding: "10px 14px", background: "#1a1a1a", border: "1.5px solid #333", borderRadius: 8, color: "white", fontSize: 13 }}>
+                  style={{ padding: "10px 14px", background: "#1a1a1a", border: "1.5px solid #ff69b4", borderRadius: 8, color: "white", fontSize: 13 }}>
                   {["Erfahrung", "Tipp", "Arbeitgeber", "Amt / Behörde", "Frage", "Erfolg", "Sonstiges"].map(k => <option key={k} value={k}>{k}</option>)}
                 </select>
                 <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "#888", cursor: "pointer", whiteSpace: "nowrap" }}>
@@ -623,7 +624,7 @@ export default function MainApp() {
                 </label>
               </div>
               <textarea value={neuerBeitrag} onChange={e => setNeuerBeitrag(e.target.value)} placeholder="Was möchtest du teilen? Erfahrungen mit Arbeitgebern, Ämtern, Tipps, Fragen..." rows={4}
-                style={{ width: "100%", padding: "12px 16px", background: "#1a1a1a", border: "1.5px solid #333", borderRadius: 10, color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, resize: "vertical" }} />
+                style={{ width: "100%", padding: "12px 16px", background: "#1a1a1a", border: "1.5px solid #ff69b4", borderRadius: 10, color: "white", fontFamily: "'Space Grotesk', sans-serif", fontSize: 14, resize: "vertical" }} />
               <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
                 <button onClick={postBeitrag} disabled={!neuerBeitrag.trim()} style={{ background: "#A855F7", border: "none", color: "white", padding: "10px 20px", borderRadius: 8, cursor: "pointer", fontSize: 14, fontWeight: 700, opacity: neuerBeitrag.trim() ? 1 : 0.4 }}>
                   Veröffentlichen
@@ -635,7 +636,7 @@ export default function MainApp() {
             {pinnwandLoading ? (
               <p style={{ color: "#444", textAlign: "center", padding: "40px 0" }}>Lädt...</p>
             ) : pinnwandBeitraege.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "60px 20px", color: "#333" }}>
+              <div style={{ textAlign: "center", padding: "60px 20px", color: "#ff69b4" }}>
                 <p style={{ fontSize: 40, marginBottom: 16 }}>📌</p>
                 <p style={{ fontSize: 16 }}>Noch keine Beiträge. Sei die erste Person!</p>
               </div>
@@ -651,7 +652,7 @@ export default function MainApp() {
                         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                           <span style={{ padding: "3px 10px", borderRadius: 6, background: catColor + "22", color: catColor, fontSize: 11, fontWeight: 600, border: `1px solid ${catColor}44` }}>{b.kategorie}</span>
                           <span style={{ fontSize: 13, color: "#555" }}>{b.anonym ? "Anonym" : b.anzeigename || "Nutzer:in"}</span>
-                          <span style={{ fontSize: 11, color: "#333" }}>{new Date(b.created_at).toLocaleDateString("de-DE")}</span>
+                          <span style={{ fontSize: 11, color: "#ff69b4" }}>{new Date(b.created_at).toLocaleDateString("de-DE")}</span>
                         </div>
                         {isOwn && (
                           <button onClick={() => deleteBeitrag(b.id)} style={{ background: "none", border: "none", color: "#555", cursor: "pointer", fontSize: 16, padding: "0 4px" }} title="Löschen">×</button>
@@ -670,7 +671,7 @@ export default function MainApp() {
 
       {/* Footer */}
       <footer style={{ borderTop: "1px solid #1a1a1a", padding: "20px 24px", textAlign: "center" }}>
-        <p style={{ fontSize: 12, color: "#333" }}>
+        <p style={{ fontSize: 15, color: "#ff69b4" }}>
           <a href="/impressum" style={{ color: "#444", textDecoration: "none" }}>Impressum & Datenschutz</a>
           {" · "}
           <span>Diffusion — Different.Inclusion</span>
