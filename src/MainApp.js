@@ -149,12 +149,16 @@ export default function MainApp() {
     setProfileLoading(false);
   }
 
-  async function loadPinnwand() {
-    setPinnwandLoading(true);
-    const { data } = await supabase.from("pinnwand").select("*, profiles(full_name, avatar_url)").order("created_at", { ascending: false }).limit(50);
-    if (data) setPinnwandBeitraege(data);
-    setPinnwandLoading(false);
-  }
+ async function loadPinnwand() {
+  setPinnwandLoading(true);
+  const { data } = await supabase
+    .from("pinnwand")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(50);
+  if (data) setPinnwandBeitraege(data);
+  setPinnwandLoading(false);
+}
 
   async function loadVorbilder() {
     const { data } = await supabase.from("profiles").select("id, full_name, headline, avatar_url, rolemodel_tags, work_model, looking_for_work").eq("is_rolemodel", true).limit(50);
