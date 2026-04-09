@@ -1,5 +1,3 @@
-import { useEffect, useState, useRef } from "react";
-import { supabase } from "./supabase";
 import {
   EMPTY_PROFILE,
   NAV_ITEMS,
