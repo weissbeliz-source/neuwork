@@ -443,7 +443,7 @@ function MainApp() {
 
   );
 }
-import { useEffect, useState, useRef } from "react";
+
 import { supabase } from "./supabase";
 
 import AuthScreen from "./AuthScreen"; // falls diese Komponente existiert
