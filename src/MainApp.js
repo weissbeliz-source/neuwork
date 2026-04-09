@@ -137,6 +137,7 @@ export default function MainApp() {
         has_disability_id: !!data.has_disability_id,
         disability_degree: data.disability_degree || "", support_needs: data.support_needs || "",
         is_rolemodel: !!data.is_rolemodel, rolemodel_tags: data.rolemodel_tags || "",
+        avatar_x: data.avatar_x ?? -30, avatar_y: data.avatar_y ?? -30,
       });
     }
     setProfileLoading(false);
@@ -191,6 +192,7 @@ export default function MainApp() {
       has_disability_id: profile.has_disability_id,
       disability_degree: profile.disability_degree, support_needs: profile.support_needs,
       is_rolemodel: profile.is_rolemodel, rolemodel_tags: profile.rolemodel_tags,
+      avatar_x: profile.avatar_x ?? -30, avatar_y: profile.avatar_y ?? -30,
     }, { onConflict: "id" });
     if (error) setSaveMessage("Fehler: " + error.message);
     else { setSaveMessage("✓ Gespeichert!"); setProfileMode("view"); }
@@ -369,22 +371,76 @@ export default function MainApp() {
 
                 <div style={{ display: "grid", gap: 24 }}>
 
-                  {/* Avatar */}
+                  {/* Avatar mit Drag-to-Reposition */}
                   <div>
                     <label style={lbl}>Profilbild</label>
-                    <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
-                      <div onClick={() => fileInputRef.current?.click()} style={{ width: 80, height: 80, borderRadius: "50%", overflow: "hidden", cursor: "pointer", border: `3px solid ${COLORS.purple}`, flexShrink: 0 }}>
-                        {profile.avatar_url ? (
-                          <img src={profile.avatar_url} alt="avatar" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        ) : (
-                          <div style={{ width: "100%", height: "100%", background: COLORS.purple, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, fontWeight: 700, color: "white" }}>{avatarInitial}</div>
+                    <div style={{ display: "flex", gap: 20, alignItems: "flex-start", flexWrap: "wrap" }}>
+                      {/* Avatar Vorschau — ziehbar */}
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
+                        <div
+                          onClick={() => !profile.avatar_url && fileInputRef.current?.click()}
+                          style={{ width: 100, height: 100, borderRadius: "50%", overflow: "hidden", border: `3px solid ${COLORS.purple}`, flexShrink: 0, position: "relative", cursor: profile.avatar_url ? "default" : "pointer", background: COLORS.bgInput }}
+                        >
+                          {profile.avatar_url ? (
+                            <img
+                              src={profile.avatar_url}
+                              alt="avatar"
+                              draggable={false}
+                              style={{
+                                width: "160%", height: "160%",
+                                objectFit: "cover",
+                                position: "absolute",
+                                left: `${profile.avatar_x ?? -30}%`,
+                                top: `${profile.avatar_y ?? -30}%`,
+                                cursor: "grab",
+                                userSelect: "none",
+                              }}
+                              onMouseDown={e => {
+                                e.preventDefault();
+                                const startX = e.clientX;
+                                const startY = e.clientY;
+                                const startObjX = profile.avatar_x ?? -30;
+                                const startObjY = profile.avatar_y ?? -30;
+                                const onMove = mv => {
+                                  const dx = ((mv.clientX - startX) / 100) * 100;
+                                  const dy = ((mv.clientY - startY) / 100) * 100;
+                                  const newX = Math.min(0, Math.max(-60, startObjX + dx));
+                                  const newY = Math.min(0, Math.max(-60, startObjY + dy));
+                                  setProfile(p => ({ ...p, avatar_x: newX, avatar_y: newY }));
+                                };
+                                const onUp = () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
+                                window.addEventListener("mousemove", onMove);
+                                window.addEventListener("mouseup", onUp);
+                              }}
+                            />
+                          ) : (
+                            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, fontWeight: 700, color: "white", background: COLORS.purple }}>
+                              {avatarInitial}
+                            </div>
+                          )}
+                        </div>
+                        {profile.avatar_url && (
+                          <p style={{ fontSize: 11, color: COLORS.textMuted, textAlign: "center", maxWidth: 100 }}>
+                            Bild ziehen um Ausschnitt zu verschieben
+                          </p>
                         )}
                       </div>
-                      <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={e => { if (e.target.files?.[0]) uploadAvatar(e.target.files[0]); }} />
-                      <p style={{ fontSize: 13, color: COLORS.textMuted }}>
-                        {avatarUploading ? "Wird hochgeladen…" : "Klick auf das Bild um ein Foto hochzuladen."}
-                      </p>
+                      {/* Buttons */}
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingTop: 4 }}>
+                        <button type="button" onClick={() => fileInputRef.current?.click()} style={{ background: COLORS.purple, border: "none", color: "white", padding: "10px 18px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, fontSize: 14, fontWeight: 600 }}>
+                          {avatarUploading ? "Wird hochgeladen…" : profile.avatar_url ? "Bild wechseln" : "Bild hochladen"}
+                        </button>
+                        {profile.avatar_url && (
+                          <button type="button" onClick={() => setProfile(p => ({ ...p, avatar_url: "", avatar_x: -30, avatar_y: -30 }))} style={{ background: "transparent", border: `1.5px solid ${COLORS.border}`, color: COLORS.textMuted, padding: "10px 18px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, fontSize: 14 }}>
+                            Bild entfernen
+                          </button>
+                        )}
+                        <p style={{ fontSize: 12, color: COLORS.textMuted, lineHeight: 1.5 }}>
+                          JPG oder PNG · max. 5 MB
+                        </p>
+                      </div>
                     </div>
+                    <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={e => { if (e.target.files?.[0]) uploadAvatar(e.target.files[0]); }} />
                   </div>
 
                   {/* Basis */}

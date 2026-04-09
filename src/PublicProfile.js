@@ -43,7 +43,7 @@ function Section({ title, children, accent = COLORS.purple, count }) {
           border: "none", cursor: "pointer", textAlign: "left", gap: 12,
         }}
       >
-        <span style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, color: COLORS.textPrimary }}>
+        <span style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, color: "#F8FAFC" }}>
           {title}
         </span>
         <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
@@ -67,10 +67,10 @@ function TagCloud({ tags, color = COLORS.purple }) {
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
       {tags.map(t => (
         <span key={t} style={{
-          padding: "6px 14px", borderRadius: 8,
-          background: color + "18", color,
-          border: `1px solid ${color}33`,
-          fontSize: 14, fontFamily: FONT, lineHeight: 1.4,
+          padding: "7px 16px", borderRadius: 8,
+          background: color + "22", color,
+          border: `1.5px solid ${color}55`,
+          fontSize: 15, fontFamily: FONT, lineHeight: 1.4, fontWeight: 500,
         }}>{t}</span>
       ))}
     </div>
@@ -142,9 +142,9 @@ export default function PublicProfile({ userId, isPublic = false, onEdit }) {
   };
 
   const sectionLabel = {
-    fontFamily: FONT, fontSize: 11, fontWeight: 700,
+    fontFamily: FONT, fontSize: 12, fontWeight: 700,
     textTransform: "uppercase", letterSpacing: "0.1em",
-    color: COLORS.textMuted, marginBottom: 16,
+    color: "#64748B", marginBottom: 16,
   };
 
   return (
@@ -183,9 +183,20 @@ export default function PublicProfile({ userId, isPublic = false, onEdit }) {
       <div style={card}>
         <div style={{ display: "flex", gap: 24, alignItems: "flex-start" }} className="hero-flex">
           {profile.avatar_url ? (
-            <img src={profile.avatar_url} alt={`Foto von ${profile.full_name}`}
-              style={{ width: 110, height: 110, borderRadius: "50%", objectFit: "cover",
-                flexShrink: 0, border: `3px solid ${COLORS.purple}` }} />
+            <div style={{ width: 110, height: 110, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: `3px solid ${COLORS.purple}`, position: "relative" }}>
+              <img
+                src={profile.avatar_url}
+                alt={`Foto von ${profile.full_name}`}
+                draggable={false}
+                style={{
+                  width: "160%", height: "160%",
+                  objectFit: "cover",
+                  position: "absolute",
+                  left: `${profile.avatar_x ?? -30}%`,
+                  top: `${profile.avatar_y ?? -30}%`,
+                }}
+              />
+            </div>
           ) : (
             <div style={{ width: 110, height: 110, borderRadius: "50%",
               background: `linear-gradient(135deg, ${COLORS.purple}, #7C3AED)`,
@@ -195,17 +206,17 @@ export default function PublicProfile({ userId, isPublic = false, onEdit }) {
             </div>
           )}
           <div style={{ flex: 1 }}>
-            <h1 style={{ fontFamily: FONT, fontSize: 32, fontWeight: 700, color: COLORS.textPrimary,
-              marginBottom: 6, letterSpacing: "-0.5px", lineHeight: 1.2 }}>
+            <h1 style={{ fontFamily: FONT, fontSize: 34, fontWeight: 700, color: "#F8FAFC",
+              marginBottom: 8, letterSpacing: "-0.5px", lineHeight: 1.2 }}>
               {profile.full_name || "Anonym"}
             </h1>
             {profile.headline && (
-              <p style={{ fontSize: 18, color: COLORS.textSecondary, marginBottom: 10, lineHeight: 1.5 }}>
+              <p style={{ fontSize: 19, color: "#CBD5E1", marginBottom: 12, lineHeight: 1.5, fontWeight: 500 }}>
                 {profile.headline}
               </p>
             )}
             {profile.bio && (
-              <p style={{ fontSize: 15, color: COLORS.textMuted, lineHeight: 1.7,
+              <p style={{ fontSize: 16, color: "#94A3B8", lineHeight: 1.75,
                 marginBottom: 14, fontStyle: "italic", borderLeft: `3px solid ${COLORS.purple}`,
                 paddingLeft: 14 }}>
                 {profile.bio}

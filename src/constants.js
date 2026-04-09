@@ -9,9 +9,9 @@ export const COLORS = {
   bgInput: "#162032",
   border: "#334155",
   borderHover: "#475569",
-  textPrimary: "#F1F5F9",
-  textSecondary: "#94A3B8",
-  textMuted: "#64748B",
+  textPrimary: "#F8FAFC",
+  textSecondary: "#CBD5E1",
+  textMuted: "#94A3B8",
   purple: "#A78BFA",
   purpleBg: "#A78BFA1A",
   purpleBorder: "#A78BFA33",
@@ -374,6 +374,8 @@ export const EMPTY_PROFILE = {
   support_needs: "",
   is_rolemodel: false,
   rolemodel_tags: "",
+  avatar_x: -30,
+  avatar_y: -30,
 };
 
 export const ROLEMODEL_TAGS = [
