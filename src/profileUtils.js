@@ -1,23 +1,23 @@
-export function parseStoredField(field) {
+import { createTagField } from "./constants";
+
+export function parseStoredField(value) {
+  if (!value) return createTagField();
   try {
-    return field ? JSON.parse(field) : { tags: [], custom: "" };
-  } catch {
-    return { tags: [], custom: "" };
+    const parsed = JSON.parse(value);
+    if (parsed && Array.isArray(parsed.tags)) return { tags: parsed.tags, custom: parsed.custom || "" };
+  } catch (error) {
+    return { tags: [], custom: typeof value === "string" ? value : "" };
   }
+  return createTagField();
 }
 
-export function serializeField(field) {
-  return JSON.stringify(field || { tags: [], custom: "" });
+export function serializeField(value) {
+  return JSON.stringify({ tags: value?.tags || [], custom: value?.custom || "" });
 }
 
 export function renderTagFieldPreview(field) {
-  if (!field) return null;
-  return (
-    <>
-      {(field.tags || []).map((t) => (
-        <span key={t}>{t}</span>
-      ))}
-      {field.custom && <span>{field.custom}</span>}
-    </>
-  );
+  const tags = field?.tags || [];
+  const custom = field?.custom?.trim() || "";
+  const parts = [...tags, custom].filter(Boolean);
+  return parts.length ? parts.join(" · ") : "Noch nichts eingetragen.";
 }

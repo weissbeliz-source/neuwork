@@ -1,3 +1,6 @@
+import { useEffect, useState, useRef } from "react";
+import { supabase } from "./supabase";
+import AuthScreen from "./AuthScreen";
 import {
   EMPTY_PROFILE,
   NAV_ITEMS,
@@ -5,13 +8,56 @@ import {
   NEED_CATEGORIES,
   JOBS,
   COMPANIES,
+  WAITLIST_URL,
+} from "./constants";
+import {
   parseStoredField,
   serializeField,
-  renderTagFieldPreview
-} from "./App";
+  renderTagFieldPreview,
+} from "./profileUtils";
 
+function TagField({ label, options, value, onChange, placeholder, categories }) {
+  const selectedTags = value?.tags || [];
+  const customText = value?.custom || "";
 
-function MainApp() {
+  const toggleTag = (tag) => {
+    const nextTags = selectedTags.includes(tag)
+      ? selectedTags.filter((item) => item !== tag)
+      : [...selectedTags, tag];
+    onChange({ tags: nextTags, custom: customText });
+  };
+
+  const renderTagButton = (tag) => {
+    const selected = selectedTags.includes(tag);
+    return (
+      <button key={tag} type="button" onClick={() => toggleTag(tag)} style={{ border: selected ? "1.5px solid #2C2C2C" : "1.5px solid #E2DBD0", background: selected ? "#2C2C2C" : "#F8F4ED", color: selected ? "#F5F0E8" : "#444", borderRadius: 999, padding: "8px 12px", fontFamily: "Source Sans 3", fontSize: 13, cursor: "pointer" }}>
+        {tag}
+      </button>
+    );
+  };
+
+  return (
+    <div>
+      <label style={{ fontFamily: "Source Sans 3", fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px", color: "#888", display: "block", marginBottom: 8 }}>{label}</label>
+      {categories ? (
+        <div style={{ display: "grid", gap: 16, marginBottom: 12 }}>
+          {categories.map((category) => (
+            <div key={category.title} style={{ background: "#FCFAF6", border: "1px solid #EAE2D8", borderRadius: 16, padding: 14 }}>
+              <div style={{ fontFamily: "Source Sans 3", fontSize: 12, fontWeight: 700, color: "#666", marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.8px" }}>{category.title}</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{category.tags.map(renderTagButton)}</div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>{options.map(renderTagButton)}</div>
+      )}
+      <textarea value={customText} onChange={(e) => onChange({ tags: selectedTags, custom: e.target.value })} placeholder={placeholder} rows={3}
+        style={{ width: "100%", padding: "12px 16px", borderRadius: 12, border: "1.5px solid #E2DBD0", fontFamily: "Source Sans 3", fontSize: 14, background: "#F8F4ED", outline: "none", boxSizing: "border-box", resize: "vertical", minHeight: 90 }} />
+    </div>
+  );
+}
+
+export default function MainApp() {
   const [activeNav, setActiveNav] = useState("Entdecken");
   const [selectedJob, setSelectedJob] = useState(null);
   const [savedJobs, setSavedJobs] = useState([]);
@@ -216,18 +262,15 @@ function MainApp() {
                 </div>
               ))}
             </div>
-            <div style={{ marginTop: 24, textAlign: "center" }}>
-              <button className="btn-outline" onClick={() => setActiveNav("Jobs")}>Alle Jobs ansehen →</button>
-            </div>
           </div>
         )}
 
         {activeNav === "Jobs" && (
-          <div style={{ display: "grid", gridTemplateColumns: selectedJob ? "1fr 1.2fr" : "1fr", gap: 28 }}>
+          <div style={{ display: "grid", gridTemplateColumns: selectedJob ? "1fr 1fr" : "1fr", gap: 24 }}>
             <div>
-              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 700, marginBottom: 8 }}>Offene Stellen</h2>
-              <p style={{ fontFamily: "Source Sans 3", fontSize: 14, color: "#888", marginBottom: 24 }}>Gefiltert nach deinen Bedürfnissen</p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 32, fontWeight: 700, marginBottom: 8 }}>Offene Stellen</h2>
+              <p style={{ fontFamily: "Source Sans 3", color: "#888", fontSize: 15, marginBottom: 36 }}>Alle Stellen von Firmen, die inklusive Arbeit ernst nehmen</p>
+              <div style={{ display: "grid", gap: 16 }}>
                 {JOBS.map((job) => (
                   <div key={job.id} className={`job-card${selectedJob?.id === job.id ? " selected" : ""}`} onClick={() => setSelectedJob(job)}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
@@ -360,7 +403,6 @@ function MainApp() {
                 </div>
               </div>
 
-              {/* Profil teilen */}
               <div style={{ background: "#F5F0E8", borderRadius: 12, padding: "14px 18px", marginBottom: 24, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
                 <div>
                   <p style={{ fontFamily: "Source Sans 3", fontSize: 13, fontWeight: 600, color: "#2C2C2C", marginBottom: 2 }}>🔗 Profil teilen</p>
@@ -436,9 +478,8 @@ function MainApp() {
             </div>
           </div>
         )}
+
       </main>
     </div>
-
   );
 }
-export default MainApp;
