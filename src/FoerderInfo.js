@@ -303,8 +303,7 @@ export default function FoerderInfo({ profile }) {
   const needs = profile?.needs?.tags || [];
   const assistiveTech = profile?.assistive_tech?.tags || [];
 
-  const hasMobilityNeed = needs.some(n => ["Barrierefreier Eingang", "Rollstuhlgerechter Arbeitsplatz", "Aufzug", "Rampe", "Rollstuhl"].includes(n)) ||
-    assistiveTech.some(t => ["Rollstuhl", "Gehhilfe"].includes(t));
+  
   const hasSensoryNeed = needs.some(n => ["Gebärdensprachdolmetschung", "Untertitel / Captions", "Screenreader-kompatible Tools"].includes(n)) ||
     assistiveTech.some(t => ["Screenreader (z.B. NVDA, JAWS)", "Hörhilfe / Cochlea-Implantat", "Gebärdensprachdolmetscher:in"].includes(t));
 
