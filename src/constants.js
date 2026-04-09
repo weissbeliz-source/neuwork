@@ -1,107 +1,348 @@
-export const NAV_ITEMS = ["Entdecken", "Jobs", "Firmen", "Community", "Profil"];
+// =============================================
+// DESIGN TOKENS — Diffusion
+// Basis: Dunkelblau, Akzente: Lila, Grün, Gelb
+// Font: Schibsted Grotesk (Google Fonts)
+// =============================================
+export const COLORS = {
+  bg: "#0F172A",
+  bgCard: "#1E293B",
+  bgInput: "#162032",
+  border: "#334155",
+  borderHover: "#475569",
+  textPrimary: "#F1F5F9",
+  textSecondary: "#94A3B8",
+  textMuted: "#64748B",
+  purple: "#A78BFA",
+  purpleBg: "#A78BFA1A",
+  purpleBorder: "#A78BFA33",
+  green: "#4ADE80",
+  greenBg: "#4ADE801A",
+  greenBorder: "#4ADE8033",
+  yellow: "#FDE047",
+  yellowBg: "#FDE0471A",
+  yellowBorder: "#FDE04733",
+  red: "#F87171",
+  redBg: "#F871711A",
+};
+
+export const FONT = "'Schibsted Grotesk', 'Inter', system-ui, sans-serif";
+
+// =============================================
+// NAVIGATION
+// =============================================
+export const NAV_ITEMS = [
+  { id: "profil", label: "Profil" },
+  { id: "foerder", label: "Fördercheck" },
+  { id: "jobs", label: "Jobs" },
+  { id: "vorbilder", label: "Vorbilder" },
+  { id: "pinnwand", label: "Pinnwand" },
+];
 
 export const WAITLIST_URL =
   "https://2dc38334.sibforms.com/serve/MUIFAPKpOnstY_-htfpGf8fSuN_3L6kSak_nq5bhpByLgceCY8Y4ELFy6yuneqI_G573gDtR1KAmb5Fkk7WHrhGXc3Ymc91KV9F95wvezX667FuUj-Q0XPJKutk5kc11IMYiH8umCTSuum50v4T5evlteY7oFAwPo05t1ZzxiUOtcTggYVSF4FtdLP1TZBYHjqLXC8vnMXFOX0hNlA==";
 
-export const JOBS = [
-  { id: 1, title: "UX Researcher", company: "Klara GmbH", tags: ["Remote", "Flexible Zeiten", "Ruhiges Büro", "Kein Open Space"], type: "Vollzeit", color: "#7C9E87", match: 94, desc: "Wir suchen jemanden, der mit echtem Einfühlungsvermögen Nutzerbedürfnisse erforscht. Kein Daily-Standup-Zwang, async-first." },
-  { id: 2, title: "Backend Entwickler:in", company: "Softalpha", tags: ["Hybrid", "Masking-frei", "ADHS-freundlich", "Ruhezonen"], type: "Teilzeit möglich", color: "#8B7EC8", match: 87, desc: "Python/Django. Wir kommunizieren schriftlich, Meetings nur wenn nötig. Du darfst Kopfhörer tragen, dich bewegen, deinen Rhythmus leben." },
-  { id: 3, title: "Grafikdesign & Illustration", company: "Bunte Welt Verlag", tags: ["Vollständig Remote", "Async", "Flexible Deadlines", "Keine Kamera-Pflicht"], type: "Freelance", color: "#D4956A", match: 81, desc: "Kinderbuchillustrationen und Marketingmaterial. Wir respektieren deine Energie und arbeiten mit klaren, schriftlichen Briefings." },
-  { id: 4, title: "Data Analyst:in", company: "GreenStats AG", tags: ["Remote", "Einzelbüro möglich", "Reizarme Umgebung"], type: "Vollzeit", color: "#5B9BAD", match: 76, desc: "Nachhaltigkeitsdaten analysieren und visualisieren. Kleines Team, flache Hierarchie, du bekommst klare Aufgaben mit Kontext." },
-];
-
-export const COMPANIES = [
-  { id: 1, name: "Klara GmbH", sector: "UX & Design", badge: "Zertifiziert inklusiv", checks: ["Neurodivergenz-Awareness-Training", "Flexible Arbeitszeiten", "Ruhezonen im Büro", "Async-First Kommunikation", "Individuelle Onboarding-Pläne"], employees: "45–60", color: "#7C9E87" },
-  { id: 2, name: "Softalpha", sector: "Software & IT", badge: "ADHS-freundlich", checks: ["Kein Masking erwartet", "Kopfhörer-freundlich", "Schriftliche Kommunikation bevorzugt", "Reizarme Meetingräume"], employees: "20–35", color: "#8B7EC8" },
-  { id: 3, name: "auticon Deutschland", sector: "IT-Consulting", badge: "Spezialisiert auf Autismus", checks: ["Von Autisten gegründet", "100% neurodivergente Mitarbeitende", "Job-Coaches inklusive", "Individuelle Begleitung"], employees: "200+", color: "#5B9BAD" },
-];
-
+// =============================================
+// STÄRKEN
+// =============================================
 export const TAG_OPTIONS = {
+  // Persönliche Stärken
   strengths_personal: [
-    "Empathisch", "Analytisch", "Kreativ", "Fokussiert", "Detailorientiert", "Strategisch",
-    "Zuverlässig", "Kommunikationsstark", "Strukturiert", "Lösungsorientiert",
-    "Teamfähig", "Lernbereit", "Belastbar", "Verantwortungsbewusst", "Engagiert",
-    "Eigeninitiative", "Sorgfältig", "Offen", "Resilienz", "Organisationstalent",
-    "Zielorientiert", "Selbständig", "Geduldig", "Hyperfokus", "Mustererkennung",
-    "Außergewöhnliche Detailwahrnehmung", "Ehrlich und direkt", "Tiefes Fachwissen",
-    "Ausdauer bei Interessen", "Kreatives Querdenken", "Hohe Konzentrationsfähigkeit",
-    "Systemdenken", "Durchhaltevermögen",
+    // Klassische Soft Skills
+    "Empathisch", "Analytisch", "Kreativ", "Fokussiert", "Detailorientiert",
+    "Strategisch", "Zuverlässig", "Kommunikationsstark", "Strukturiert",
+    "Lösungsorientiert", "Teamfähig", "Lernbereit", "Verantwortungsbewusst",
+    "Engagiert", "Eigeninitiative", "Sorgfältig", "Offen", "Geduldig",
+    "Ausdauernd", "Zielorientiert", "Selbständig", "Organisationstalent",
+    "Durchhaltevermögen", "Fleißig", "Pünktlich", "Ehrlich", "Humorvoll",
+    "Warmherzig", "Ruhig & besonnen", "Belastbar", "Hilfsbereit",
+    "Loyal", "Direkt",
+    // Neurodivergenz-Stärken
+    "Hyperfokus", "Mustererkennung", "Außergewöhnliche Detailwahrnehmung",
+    "Tiefes Fachwissen in Spezialgebieten", "Ehrlich und direkt",
+    "Kreatives Querdenken", "Hohe Konzentrationsfähigkeit",
+    "Systemdenken", "Originalität & unkonventionelle Ideen",
+    "Hohes Gerechtigkeitsgefühl", "Ausdauer bei Interessen",
+    // Stärken bei geistiger Behinderung / Lernschwierigkeiten
+    "Zuverlässig bei vertrauten Aufgaben",
+    "Ausdauer bei Routinetätigkeiten",
+    "Freude an handwerklicher Arbeit",
+    "Konzentration auf konkrete Aufgaben",
+    "Freude an wiederholenden Tätigkeiten",
+    "Freundlich auf Menschen zugehen",
+    // Stärken bei psychischer Behinderung / chronischer Erkrankung
+    "Einfühlungsvermögen durch eigene Erfahrungen",
+    "Resilienz & Widerstandskraft",
+    "Tiefes Verständnis für andere in Krisen",
+    "Achtsamkeit & Selbstreflexion",
+    "Kreativität als Verarbeitungsstrategie",
   ],
+
+  // Wie andere mich erleben
+  strengths_others: [
+    "Bin ein Sonnenschein im Team",
+    "Verlässliche Ansprechperson",
+    "Bringt frische Perspektiven",
+    "Macht Kompliziertes einfach",
+    "Denkt ums Eck",
+    "Stellt die richtigen Fragen",
+    "Bemerkt was andere übersehen",
+    "Hält zusammen was auseinanderfällt",
+    "Bringt das Team zum Lachen",
+    "Motiviert andere",
+    "Hat immer ein offenes Ohr",
+    "Bringt Ruhe rein",
+    "Findet immer eine Lösung",
+    "Man kann sich auf mich verlassen",
+    "Tut einfach — ohne viel Aufhebens",
+    "Merkt sofort wenn jemand Hilfe braucht",
+    "Schafft angenehme Atmosphäre",
+    "Bringt Energie ins Team",
+    "Denkt an Details die andere vergessen",
+  ],
+
+  // Besondere Fähigkeiten
+  strengths_special: [
+    "Hyperfokus auf Interessengebiete",
+    "Mustererkennung in Daten / Systemen",
+    "Systemdenken — sieht das große Bild",
+    "Außergewöhnliches Gedächtnis",
+    "Kreatives Problemlösen",
+    "Mehrsprachigkeit",
+    "Hohe Belastbarkeit bei Routineaufgaben",
+    "Schnelles Erlernen neuer Fertigkeiten",
+    "Präzision bei handwerklichen Tätigkeiten",
+    "Räumliches Denken",
+    "Körperliche Ausdauer",
+    "Feines Gespür für Stimmungen",
+    "Technisches Verständnis",
+    "Mathematisches Denken",
+    "Ästhetisches Feingefühl",
+    "Strukturiertes Denken",
+  ],
+
+  // Fachliche Stärken (nach Berufsfeld)
   strengths_professional: [
-    "Research", "UX Design", "Schreiben / Texten", "Organisation", "Projektmanagement",
-    "Figma", "Canva", "Beratung", "Moderation", "Content Creation", "Konzeption",
-    "Programmieren", "Datenanalyse", "Grafikdesign", "Übersetzung", "Buchhaltung",
-    "Kundenbetreuung", "Lehren / Erklären", "Handwerkliche Fähigkeiten",
-    "Pflege / Betreuung", "Logistik", "Qualitätssicherung", "Technischer Support",
-    "Social Media", "Kommunikation", "Verwaltung",
+    // Digital & Tech
+    "Programmieren", "Webentwicklung", "Datenanalyse", "IT-Support",
+    "UX/UI-Design", "Social-Media-Management", "SEO / SEA",
+    "Videobearbeitung", "KI-Tools", "Excel / Tabellenkalkulation",
+    // Kreativ
+    "Grafikdesign", "Illustration", "Fotografie", "Nähen / Schneidern",
+    "Handwerkliche Gestaltung", "Floristik",
+    // Sprache & Kommunikation
+    "Schreiben / Texten", "Übersetzen", "Dolmetschen",
+    "Gebärdensprache (DGS)", "Moderieren", "Präsentieren",
+    // Organisation
+    "Projektmanagement", "Buchhaltung", "Büroorganisation",
+    "Eventmanagement", "Logistik", "Qualitätssicherung",
+    // Wirtschaft & Recht
+    "BWL-Kenntnisse", "Marketing", "Vertrieb", "Kundenbetreuung",
+    "Beratung", "Rechtskenntnisse",
+    // Soziales & Pädagogik
+    "Pflege / Betreuung", "Unterrichten", "Coaching",
+    "Sozialarbeit", "Gruppenleitung", "Konfliktmoderation",
+    // Handwerk & Technik
+    "Holzbearbeitung", "Metallverarbeitung", "Kfz-Technik",
+    "Elektroinstallation", "Reparieren / Upcycling", "3D-Druck",
+    // Natur & Haushalt
+    "Gartenbau / Pflanzenpflege", "Tierpflege", "Kochen / Backen",
+    "Haushaltsorganisation", "Reinigung & Hygiene",
+    // Aktivismus & Gesellschaft
+    "Community Organizing", "Advocacy / Öffentlichkeitsarbeit",
+    "Vereinsarbeit / Ehrenamt", "Politische Bildung",
+    // Spiritualität
+    "Meditation / Achtsamkeit", "Ritualgestaltung", "Seelsorge",
   ],
+
+  // Skills (Tools & konkrete Fähigkeiten)
+  skills: [
+    // Hilfsjobs & Einfachstätigkeiten (oft vergessen!)
+    "Waren einräumen / Lagerhaltung", "Reinigung & Haushaltsführung",
+    "Botengänge / Auslieferung", "Gartenarbeit / Rasenpflege",
+    "Paketdienst / Sortierung", "Küchenhilfe / Spülen",
+    "Kassiertätigkeit", "Regalauffüllen", "Verpackungsarbeiten",
+    "Sortiertätigkeiten", "Aktenvernichtung / Archiv",
+    "Tierpflege-Assistenz", "Wäscherei / Bügeln",
+    "Fahrzeugpflege / Autowaschen", "Hausmeisterdienste",
+    "Einkaufshelfer:in", "Botschaften überbringen",
+    "Licht- und Tontechnik-Assistenz", "Auf- und Abbauhelfer:in",
+    "Küchenhilfe / Catering-Assistenz",
+    // Zoo & Tierberufe
+    "Tierpflege Zoo / Wildgehege", "Hundepension / -training",
+    "Pferdebetreuung / Stallarbeit", "Kleintierversorgung",
+    "Schäferei / Viehhaltung", "Imkerei",
+    "Aquaristik / Terrarienpflege", "Veterinärassistenz",
+    "Tiergestützte Pädagogik",
+    // Auto & Fahrzeug
+    "Kfz-Mechatronik", "Kfz-Elektrik", "Fahrzeugdiagnose",
+    "Lackierung / Karosseriebau", "Reifenservice",
+    "Fahrzeugaufbereitung / Autowaschen", "Fuhrparkmanagement",
+    "Berufskraftfahrer:in (Lkw / Bus)", "Gabelstaplerführerschein",
+    "Lieferfahrer:in",
+    // Politik & Gesellschaft
+    "Kommunalpolitik", "Parteiarbeit", "Wahlkampfarbeit",
+    "Stadtplanung", "Entwicklungspolitik", "Friedensarbeit",
+    "Menschenrechtsarbeit", "Antirassismusarbeit",
+    "Queer-Aktivismus", "Behindertenrechte-Advocacy",
+    "Klimaaktivismus", "Tierschutz-Aktivismus",
+    "Petitions- und Kampagnenarbeit",
+    // Gastronomie & Hotel
+    "Kochen (professionell)", "Barista / Kaffeespezialitäten",
+    "Kellnern / Service", "Catering", "Patisserie / Backen",
+    "Hotellerie / Rezeption", "Housekeeping",
+    // Medien & Kultur
+    "Moderation (TV / Radio / Podcast)", "Regie / Bühnentechnik",
+    "Musikunterricht / Musizieren", "Aufnahmetechnik",
+    "Songwriting", "Tanz / Choreografie",
+    // Wissenschaft
+    "Recherche / Literaturrecherche", "Statistik / Auswertung",
+    "Laborarbeit", "Wissenschaftliches Schreiben",
+    "Feldforschung", "Archivarbeit",
+    // Gesundheit
+    "Erste Hilfe", "Physiotherapie", "Ergotherapie",
+    "Medizinische Dokumentation", "Ernährungsberatung",
+    // Digital allgemein
+    "Microsoft Office", "Google Workspace", "Figma", "Canva",
+    "Python", "SQL", "WordPress", "Shopify",
+  ],
+
+  // Arbeitsstil
   work_style: [
-    "Async", "Schriftlich", "Mit klaren Aufgaben", "Mit viel Fokuszeit", "Eigenständig",
-    "Im kleinen Team", "Remote", "Hybrid", "Mit Planbarkeit", "Kreativ frei",
-    "Mit visuellen Tools", "Mit klaren Deadlines", "Mit Routinen", "Iterativ",
+    "Async", "Schriftlich", "Mit klaren Aufgaben",
+    "Mit viel Fokuszeit", "Eigenständig", "Im kleinen Team",
+    "Remote", "Hybrid", "Mit Planbarkeit", "Kreativ frei",
+    "Mit visuellen Tools", "Mit klaren Deadlines",
+    "Mit Routinen", "Iterativ", "Mit direktem Feedback",
+    "Ohne viele Meetings", "Mit Schritt-für-Schritt-Anleitung",
+    "Mit konkreten Beispielen", "Mit Bewegungspausen",
   ],
+
+  // Kommunikation
   communication: [
-    "Schriftlich statt Telefon", "E-Mail bevorzugt", "Chat bevorzugt",
-    "Keine spontanen Anrufe", "Vorab-Agenda bei Meetings", "Async statt Echtzeit",
-    "Klare und direkte Sprache", "Einfache Sprache", "Visuelle Erklärungen",
-    "Schriftliche Zusammenfassungen nach Meetings", "Gebärdensprache (DGS)",
-    "Kommunikationshilfe / AAC", "Text-to-Speech / Screen Reader",
+    "Schriftlich statt Telefon", "E-Mail bevorzugt",
+    "Chat bevorzugt (z.B. Slack)", "Keine spontanen Anrufe",
+    "Vorab-Agenda bei Meetings", "Async statt Echtzeit",
+    "Klare und direkte Sprache", "Einfache Sprache",
+    "Visuelle Erklärungen", "Schriftliche Zusammenfassungen nach Meetings",
+    "Gebärdensprache (DGS)", "Kommunikationshilfe / AAC",
+    "Text-to-Speech / Screen Reader",
+    "Mehr Zeit zum Antworten", "Keine Gruppenrunden",
   ],
+
+  // Hilfsmittel
   assistive_tech: [
     "Screenreader (z.B. NVDA, JAWS)", "Sprachsteuerung (z.B. Dragon)",
     "Hörhilfe / Cochlea-Implantat", "Vergrößerungssoftware",
     "Tastaturbedienung statt Maus", "Ergonomische Tastatur / Maus",
     "Höhenverstellbarer Tisch", "Zeitmanagement-Apps",
-    "Noise-Cancelling-Kopfhörer", "Fidget-Tools", "Rollstuhl", "Gehhilfe",
+    "Noise-Cancelling-Kopfhörer", "Fidget-Tools",
+    "Rollstuhl", "Gehhilfe / Rollator",
     "Kommunikationsgerät / AAC", "Gebärdensprachdolmetscher:in",
+    "Leichte-Sprache-Unterstützung", "Vorlesefunktion",
   ],
+
+  // Bedürfnisse (für TagField)
   needs: [
-    "Flexible Zeiten", "Teilzeit möglich", "Remote möglich", "Hybrid möglich",
-    "Asynchrone Kommunikation", "Schriftliche Kommunikation", "Klare Kommunikation",
-    "Klare Prioritäten", "Klare Aufgabenbeschreibung", "Klare Deadlines",
-    "Vorhersehbare Abläufe", "Feste Routinen", "Strukturierte Einarbeitung",
-    "Buddy / Ansprechperson", "Job-Coaching", "Zusätzliche Check-ins",
-    "Mehr Bearbeitungszeit", "Angepasste Zielvorgaben", "Flexible Pausen",
-    "Zusätzliche Pausen", "Weniger Meetings", "Meetings nur mit Agenda",
+    "Flexible Zeiten", "Teilzeit möglich", "Remote möglich",
+    "Hybrid möglich", "Asynchrone Kommunikation",
+    "Schriftliche Kommunikation", "Klare Kommunikation",
+    "Klare Prioritäten", "Klare Aufgabenbeschreibung",
+    "Klare Deadlines", "Vorhersehbare Abläufe", "Feste Routinen",
+    "Strukturierte Einarbeitung", "Buddy / Ansprechperson",
+    "Job-Coaching", "Zusätzliche Check-ins",
+    "Mehr Bearbeitungszeit", "Angepasste Zielvorgaben",
+    "Flexible Pausen", "Zusätzliche Pausen",
+    "Weniger Meetings", "Meetings nur mit Agenda",
     "Protokolle nach Meetings", "Aufgaben in kleinen Schritten",
     "Erinnerungen / Prompts", "Einzelgespräche statt Gruppenrunden",
-    "Reizarme Umgebung", "Ruhiger Arbeitsplatz", "Einzelbüro", "Ruheraum",
-    "Noise-Cancelling erlaubt", "Kopfhörer erlaubt", "Keine Kamera-Pflicht",
-    "Wenig Kontextwechsel", "Ununterbrochene Fokuszeit", "Visuelle Planungs-Tools",
-    "Schriftliche Briefings", "Keine spontanen Anrufe", "Vorbereitung vor Meetings",
-    "Masking-freie Kultur", "Psychologische Sicherheit", "Sensorische Rücksichtnahme",
-    "Reduzierte soziale Pflichttermine", "Barrierefreier Eingang", "Aufzug", "Rampe",
-    "Automatische Türen", "Breite Wege / Türen", "Rollstuhlgerechter Arbeitsplatz",
-    "Höhenverstellbarer Tisch", "Ergonomischer Stuhl", "Angepasste Arbeitsmittel",
-    "Kurze Wege im Büro", "Parkplatz in der Nähe", "Barrierefreie Toilette",
-    "Homeoffice statt Pendeln", "Screenreader-kompatible Tools",
-    "Tastaturbedienbare Software", "Große Schrift", "Hoher Kontrast",
-    "Vergrößerungssoftware", "Vorlesefunktionen", "Gute Beleuchtung", "Blendfreies Licht",
-    "Untertitel / Captions", "Live-Transkription", "Gebärdensprachdolmetschung",
-    "Schriftliche Zusammenfassungen", "Chat statt Telefon", "Visuelle Alarme",
-    "Einfache Sprache", "Leichte Sprache", "Schritt-für-Schritt-Anleitungen",
-    "Visuelle Anleitungen", "Mehr Zeit zum Lernen", "Flexible Startzeiten",
-    "Späterer Arbeitsbeginn", "Pacing / Energiemanagement", "Sitz- und Stehoption",
-    "Temperaturkontrolle", "Zugang zu Wasser / Snacks / Medikamenten",
+    "Reizarme Umgebung", "Ruhiger Arbeitsplatz", "Einzelbüro",
+    "Ruheraum", "Noise-Cancelling erlaubt", "Kopfhörer erlaubt",
+    "Keine Kamera-Pflicht", "Wenig Kontextwechsel",
+    "Ununterbrochene Fokuszeit", "Visuelle Planungs-Tools",
+    "Schriftliche Briefings", "Keine spontanen Anrufe",
+    "Vorbereitung vor Meetings", "Masking-freie Kultur",
+    "Psychologische Sicherheit", "Sensorische Rücksichtnahme",
+    "Reduzierte soziale Pflichttermine",
+    "Barrierefreier Eingang", "Aufzug", "Rampe",
+    "Automatische Türen", "Breite Wege / Türen",
+    "Rollstuhlgerechter Arbeitsplatz", "Höhenverstellbarer Tisch",
+    "Ergonomischer Stuhl", "Angepasste Arbeitsmittel",
+    "Kurze Wege im Büro", "Parkplatz in der Nähe",
+    "Barrierefreie Toilette", "Homeoffice statt Pendeln",
+    "Screenreader-kompatible Tools", "Tastaturbedienbare Software",
+    "Große Schrift", "Hoher Kontrast", "Vergrößerungssoftware",
+    "Vorlesefunktionen", "Gute Beleuchtung", "Blendfreies Licht",
+    "Untertitel / Captions", "Live-Transkription",
+    "Gebärdensprachdolmetschung", "Schriftliche Zusammenfassungen",
+    "Chat statt Telefon", "Visuelle Alarme",
+    "Einfache Sprache", "Leichte Sprache",
+    "Schritt-für-Schritt-Anleitungen", "Visuelle Anleitungen",
+    "Mehr Zeit zum Lernen", "Flexible Startzeiten",
+    "Späterer Arbeitsbeginn", "Pacing / Energiemanagement",
+    "Sitz- und Stehoption", "Temperaturkontrolle",
+    "Zugang zu Wasser / Snacks / Medikamenten",
     "Termine um Behandlungen herum", "Reduzierte Reisetätigkeit",
-    "Arbeiten von zuhause bei Schub / Erschöpfung", "Weniger Lärm",
-    "Weniger grelles Licht", "Parfümarme Umgebung", "Fester Sitzplatz",
+    "Arbeiten von zuhause bei Schub / Erschöpfung",
+    "Weniger Lärm", "Weniger grelles Licht",
+    "Parfümarme Umgebung", "Fester Sitzplatz",
     "Rückzugsort bei Überlastung",
-  ],
-  skills: [
-    "Research", "UX", "Schreiben", "Organisation", "Projektmanagement",
-    "Figma", "Canva", "Beratung", "Moderation", "Content", "Konzeption", "Kommunikation",
   ],
 };
 
+// Bedürfnisse nach Kategorien
 export const NEED_CATEGORIES = [
-  { title: "Organisation & Kommunikation", tags: ["Flexible Zeiten", "Teilzeit möglich", "Remote möglich", "Hybrid möglich", "Asynchrone Kommunikation", "Schriftliche Kommunikation", "Klare Kommunikation", "Klare Prioritäten", "Klare Aufgabenbeschreibung", "Klare Deadlines", "Vorhersehbare Abläufe", "Feste Routinen", "Strukturierte Einarbeitung", "Buddy / Ansprechperson", "Job-Coaching", "Zusätzliche Check-ins", "Mehr Bearbeitungszeit", "Angepasste Zielvorgaben", "Flexible Pausen", "Zusätzliche Pausen", "Weniger Meetings", "Meetings nur mit Agenda", "Protokolle nach Meetings", "Aufgaben in kleinen Schritten", "Erinnerungen / Prompts", "Einzelgespräche statt Gruppenrunden"] },
-  { title: "Neurodivergenz & Reizregulation", tags: ["Reizarme Umgebung", "Ruhiger Arbeitsplatz", "Einzelbüro", "Ruheraum", "Noise-Cancelling erlaubt", "Kopfhörer erlaubt", "Keine Kamera-Pflicht", "Wenig Kontextwechsel", "Ununterbrochene Fokuszeit", "Visuelle Planungs-Tools", "Schriftliche Briefings", "Keine spontanen Anrufe", "Vorbereitung vor Meetings", "Masking-freie Kultur", "Psychologische Sicherheit", "Sensorische Rücksichtnahme", "Reduzierte soziale Pflichttermine", "Weniger Lärm", "Weniger grelles Licht", "Parfümarme Umgebung", "Fester Sitzplatz", "Rückzugsort bei Überlastung"] },
-  { title: "Mobilität & körperliche Barrierefreiheit", tags: ["Barrierefreier Eingang", "Aufzug", "Rampe", "Automatische Türen", "Breite Wege / Türen", "Rollstuhlgerechter Arbeitsplatz", "Höhenverstellbarer Tisch", "Ergonomischer Stuhl", "Angepasste Arbeitsmittel", "Kurze Wege im Büro", "Parkplatz in der Nähe", "Barrierefreie Toilette", "Homeoffice statt Pendeln"] },
-  { title: "Sehen", tags: ["Screenreader-kompatible Tools", "Tastaturbedienbare Software", "Große Schrift", "Hoher Kontrast", "Vergrößerungssoftware", "Vorlesefunktionen", "Gute Beleuchtung", "Blendfreies Licht"] },
-  { title: "Hören", tags: ["Untertitel / Captions", "Live-Transkription", "Gebärdensprachdolmetschung", "Schriftliche Zusammenfassungen", "Chat statt Telefon", "Visuelle Alarme"] },
-  { title: "Lernen & Verstehen", tags: ["Einfache Sprache", "Leichte Sprache", "Schritt-für-Schritt-Anleitungen", "Visuelle Anleitungen", "Mehr Zeit zum Lernen"] },
-  { title: "Energie, Gesundheit & Belastung", tags: ["Flexible Startzeiten", "Späterer Arbeitsbeginn", "Pacing / Energiemanagement", "Sitz- und Stehoption", "Temperaturkontrolle", "Zugang zu Wasser / Snacks / Medikamenten", "Termine um Behandlungen herum", "Reduzierte Reisetätigkeit", "Arbeiten von zuhause bei Schub / Erschöpfung"] },
+  {
+    title: "Organisation & Kommunikation",
+    tags: ["Flexible Zeiten", "Teilzeit möglich", "Remote möglich", "Hybrid möglich",
+      "Asynchrone Kommunikation", "Schriftliche Kommunikation", "Klare Kommunikation",
+      "Klare Prioritäten", "Klare Aufgabenbeschreibung", "Klare Deadlines",
+      "Vorhersehbare Abläufe", "Feste Routinen", "Strukturierte Einarbeitung",
+      "Buddy / Ansprechperson", "Job-Coaching", "Zusätzliche Check-ins",
+      "Mehr Bearbeitungszeit", "Angepasste Zielvorgaben", "Flexible Pausen",
+      "Zusätzliche Pausen", "Weniger Meetings", "Meetings nur mit Agenda",
+      "Protokolle nach Meetings", "Aufgaben in kleinen Schritten",
+      "Erinnerungen / Prompts", "Einzelgespräche statt Gruppenrunden"],
+  },
+  {
+    title: "Neurodivergenz & Reizregulation",
+    tags: ["Reizarme Umgebung", "Ruhiger Arbeitsplatz", "Einzelbüro", "Ruheraum",
+      "Noise-Cancelling erlaubt", "Kopfhörer erlaubt", "Keine Kamera-Pflicht",
+      "Wenig Kontextwechsel", "Ununterbrochene Fokuszeit", "Visuelle Planungs-Tools",
+      "Schriftliche Briefings", "Keine spontanen Anrufe", "Vorbereitung vor Meetings",
+      "Masking-freie Kultur", "Psychologische Sicherheit", "Sensorische Rücksichtnahme",
+      "Reduzierte soziale Pflichttermine", "Weniger Lärm", "Weniger grelles Licht",
+      "Parfümarme Umgebung", "Fester Sitzplatz", "Rückzugsort bei Überlastung"],
+  },
+  {
+    title: "Mobilität & Barrierefreiheit",
+    tags: ["Barrierefreier Eingang", "Aufzug", "Rampe", "Automatische Türen",
+      "Breite Wege / Türen", "Rollstuhlgerechter Arbeitsplatz", "Höhenverstellbarer Tisch",
+      "Ergonomischer Stuhl", "Angepasste Arbeitsmittel", "Kurze Wege im Büro",
+      "Parkplatz in der Nähe", "Barrierefreie Toilette", "Homeoffice statt Pendeln"],
+  },
+  {
+    title: "Sehen",
+    tags: ["Screenreader-kompatible Tools", "Tastaturbedienbare Software", "Große Schrift",
+      "Hoher Kontrast", "Vergrößerungssoftware", "Vorlesefunktionen",
+      "Gute Beleuchtung", "Blendfreies Licht"],
+  },
+  {
+    title: "Hören",
+    tags: ["Untertitel / Captions", "Live-Transkription", "Gebärdensprachdolmetschung",
+      "Schriftliche Zusammenfassungen", "Chat statt Telefon", "Visuelle Alarme"],
+  },
+  {
+    title: "Lernen & Verstehen",
+    tags: ["Einfache Sprache", "Leichte Sprache", "Schritt-für-Schritt-Anleitungen",
+      "Visuelle Anleitungen", "Mehr Zeit zum Lernen"],
+  },
+  {
+    title: "Energie, Gesundheit & Belastung",
+    tags: ["Flexible Startzeiten", "Späterer Arbeitsbeginn", "Pacing / Energiemanagement",
+      "Sitz- und Stehoption", "Temperaturkontrolle",
+      "Zugang zu Wasser / Snacks / Medikamenten", "Termine um Behandlungen herum",
+      "Reduzierte Reisetätigkeit", "Arbeiten von zuhause bei Schub / Erschöpfung"],
+  },
 ];
 
 export const createTagField = () => ({ tags: [], custom: "" });
@@ -112,6 +353,8 @@ export const EMPTY_PROFILE = {
   bio: "",
   strengths: createTagField(),
   strengths_professional: createTagField(),
+  strengths_others: createTagField(),
+  strengths_special: createTagField(),
   special_interests: "",
   work_style: createTagField(),
   communication_prefs: createTagField(),
@@ -129,115 +372,28 @@ export const EMPTY_PROFILE = {
   has_disability_id: false,
   disability_degree: "",
   support_needs: "",
+  is_rolemodel: false,
+  rolemodel_tags: "",
 };
 
-export const FOERDERUNGEN = [
-  {
-    id: "eingliederungszuschuss",
-    name: "Eingliederungszuschuss",
-    behoerde: "Agentur für Arbeit / Jobcenter",
-    wer_beantragt: "Arbeitgeber",
-    beschreibung: "Zuschuss zu den Lohnkosten bei Einstellung einer Person mit Behinderung.",
-    hoehe: "Bis zu 70% des Arbeitsentgelts",
-    dauer: "Bis zu 24 Monate (besonders Betroffene bis 96 Monate)",
-    voraussetzung: "Behinderung oder Schwerbehinderung",
-    hinweis: "Muss VOR Abschluss des Arbeitsvertrags beantragt werden!",
-    relevant_for: ["alle"],
-  },
-  {
-    id: "arbeitsassistenz",
-    name: "Arbeitsassistenz",
-    behoerde: "Integrationsamt",
-    wer_beantragt: "Person mit Behinderung",
-    beschreibung: "Finanzierung einer Assistenzperson am Arbeitsplatz.",
-    hoehe: "Kostenübernahme (Rechtsanspruch ab GdB 50)",
-    dauer: "Dauerhaft möglich",
-    voraussetzung: "Schwerbehinderung (GdB 50+)",
-    hinweis: "Anspruchsleistung — das Amt hat kein Ermessen!",
-    relevant_for: ["koerper", "sinnes", "psychisch", "neurodivergenz"],
-  },
-  {
-    id: "technische_arbeitshilfen",
-    name: "Technische Arbeitshilfen & Arbeitsplatzanpassung",
-    behoerde: "Integrationsamt / Reha-Träger",
-    wer_beantragt: "Arbeitgeber oder Person",
-    beschreibung: "Finanzierung von Hilfsmitteln, Software, ergonomischen Anpassungen, barrierefreiem Umbau.",
-    hoehe: "Vollfinanzierung möglich",
-    dauer: "Einmalig",
-    voraussetzung: "Behinderungsbedingt notwendig",
-    hinweis: "Alles was zum Arbeitsplatz gehört ist förderfähig!",
-    relevant_for: ["koerper", "sinnes", "neurodivergenz"],
-  },
-  {
-    id: "beschaeftigungssicherungszuschuss",
-    name: "Beschäftigungssicherungszuschuss",
-    behoerde: "Integrationsamt",
-    wer_beantragt: "Arbeitgeber",
-    beschreibung: "Laufender Zuschuss bei Minderleistung durch Behinderung.",
-    hoehe: "Individuell nach Einzelfall",
-    dauer: "Laufend",
-    voraussetzung: "GdB 50+, nachgewiesene Minderleistung",
-    hinweis: "Setzt voraus dass andere Fördermittel ausgeschöpft sind.",
-    relevant_for: ["alle"],
-  },
-  {
-    id: "berufsbegleitung",
-    name: "Berufsbegleitung / Job-Coaching",
-    behoerde: "Integrationsamt / Agentur für Arbeit",
-    wer_beantragt: "Person oder Arbeitgeber",
-    beschreibung: "Begleitung und Coaching am Arbeitsplatz durch Fachkräfte.",
-    hoehe: "Kostenübernahme",
-    dauer: "Nach Bedarf",
-    voraussetzung: "Behinderung, Unterstützungsbedarf",
-    hinweis: "Besonders hilfreich bei Neurodivergenz und psychischer Behinderung.",
-    relevant_for: ["psychisch", "neurodivergenz", "geistig"],
-  },
-  {
-    id: "nachteilsausgleich",
-    name: "Nachteilsausgleich",
-    behoerde: "Arbeitgeber / Ausbildungsstätte",
-    wer_beantragt: "Person mit Behinderung",
-    beschreibung: "Anpassung von Arbeitsbedingungen ohne Absenkung der fachlichen Anforderungen.",
-    hoehe: "Individuell (z.B. mehr Zeit, ruhiger Raum, andere Kommunikationsform)",
-    dauer: "Dauerhaft",
-    voraussetzung: "Ab GdB 30 Rechtsanspruch. Auch ohne GdB mit ärztlichem Attest möglich.",
-    hinweis: "Besonders relevant für ADHS, Autismus, Legasthenie, Dyskalkulie.",
-    relevant_for: ["neurodivergenz", "psychisch", "sinnes", "lernen"],
-  },
-  {
-    id: "budget_fuer_arbeit",
-    name: "Budget für Arbeit",
-    behoerde: "Reha-Träger / Agentur für Arbeit",
-    wer_beantragt: "Arbeitgeber",
-    beschreibung: "Lohnkostenzuschuss für Menschen die Anspruch auf WfbM hätten.",
-    hoehe: "Bis zu 75% des Lohns",
-    dauer: "Dauerhaft möglich",
-    voraussetzung: "Berechtigung zur Werkstatt für Menschen mit Behinderung (WfbM)",
-    hinweis: "Alternative zur Werkstatt — ermöglicht Arbeit auf dem ersten Arbeitsmarkt.",
-    relevant_for: ["geistig", "psychisch"],
-  },
-  {
-    id: "gebaerdensprache",
-    name: "Gebärdensprachdolmetscher:in / Kommunikationshilfen",
-    behoerde: "Integrationsamt",
-    wer_beantragt: "Person oder Arbeitgeber",
-    beschreibung: "Kostenübernahme für Dolmetscher:innen oder andere Kommunikationshilfen.",
-    hoehe: "Kostenübernahme (neue Stundensätze ab 04/2025)",
-    dauer: "Nach Bedarf",
-    voraussetzung: "Hörbehinderung oder Kommunikationsbeeinträchtigung",
-    hinweis: "Auch für Video-Meetings und Schulungen beantragbar.",
-    relevant_for: ["sinnes"],
-  },
-  {
-    id: "eutb",
-    name: "EUTB — Ergänzende Unabhängige Teilhabeberatung",
-    behoerde: "Bundesweit, kostenlos",
-    wer_beantragt: "Person mit Behinderung",
-    beschreibung: "Kostenlose unabhängige Beratung zu allen Förderungen und Rechten.",
-    hoehe: "Kostenlos",
-    dauer: "Kostenlos, jederzeit",
-    voraussetzung: "Keine — für alle Menschen mit Behinderung oder drohender Behinderung",
-    hinweis: "Empfehlung: Immer zuerst hier beraten lassen um die richtigen Träger zu finden!",
-    relevant_for: ["alle"],
-  },
+export const ROLEMODEL_TAGS = [
+  "Neurodivergent", "ADHS", "Autismus", "Körperbehinderung",
+  "Sehbehinderung", "Hörbehinderung", "Chronische Erkrankung",
+  "Psychische Erkrankung", "Lernschwierigkeit", "ME/CFS",
+  "Geistige Behinderung", "Mehrfachbehinderung",
+];
+
+// Jobs (Beispieldaten — später aus DB)
+export const JOBS = [
+  { id: 1, title: "UX Researcher", company: "Klara GmbH", tags: ["Remote", "Flexible Zeiten", "Ruhiges Büro"], type: "Vollzeit", color: "#4ADE80", match: 94, desc: "Nutzerbedürfnisse erforschen mit Einfühlungsvermögen. Kein Daily-Standup-Zwang, async-first." },
+  { id: 2, title: "Backend Entwickler:in", company: "Softalpha", tags: ["Hybrid", "Masking-frei", "ADHS-freundlich"], type: "Teilzeit möglich", color: "#A78BFA", match: 87, desc: "Python/Django. Schriftliche Kommunikation, Meetings nur wenn nötig." },
+  { id: 3, title: "Grafikdesign & Illustration", company: "Bunte Welt Verlag", tags: ["Remote", "Async", "Keine Kamera-Pflicht"], type: "Freelance", color: "#FDE047", match: 81, desc: "Kinderbuchillustrationen. Klare schriftliche Briefings, respektvoller Umgang." },
+  { id: 4, title: "Gartenpflege & Grünflächenpflege", company: "Stadtgärtnerei Ulm", tags: ["Vor Ort", "Routinearbeit", "Kleine Teams"], type: "Vollzeit", color: "#4ADE80", match: 90, desc: "Pflege öffentlicher Grünflächen. Feste Routinen, klare Aufgaben, überschaubares Team." },
+  { id: 5, title: "Lager & Logistik-Assistenz", company: "Paketzentrum GmbH", tags: ["Teilzeit möglich", "Feste Routinen", "Klare Aufgaben"], type: "Teilzeit / Vollzeit", color: "#FDE047", match: 85, desc: "Sortierung und Einlagerung. Klare Strukturen, kein Kundenkontakt nötig." },
+];
+
+export const COMPANIES = [
+  { id: 1, name: "Klara GmbH", sector: "UX & Design", badge: "Zertifiziert inklusiv", checks: ["Neurodivergenz-Awareness-Training", "Flexible Arbeitszeiten", "Ruhezonen", "Async-First"], employees: "45–60", color: "#4ADE80" },
+  { id: 2, name: "Softalpha", sector: "Software & IT", badge: "ADHS-freundlich", checks: ["Kein Masking erwartet", "Kopfhörer-freundlich", "Schriftliche Kommunikation"], employees: "20–35", color: "#A78BFA" },
+  { id: 3, name: "auticon Deutschland", sector: "IT-Consulting", badge: "Spezialisiert auf Autismus", checks: ["Von Autisten gegründet", "100% neurodivergente Mitarbeitende", "Job-Coaches inklusive"], employees: "200+", color: "#4ADE80" },
 ];
