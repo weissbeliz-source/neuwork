@@ -631,3 +631,4 @@ function MainApp() {
     </div>
   );
 }
+export default App;
