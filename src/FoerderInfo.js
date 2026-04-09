@@ -48,7 +48,6 @@ export default function FoerderInfo({ profile }) {
   const relevant = getRelevantFoerderungen();
 
   const labelStyle = { fontFamily: "Source Sans 3", fontSize: 11, fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px", color: "#888", display: "block", marginBottom: 6 };
-  const inputStyle = { width: "100%", padding: "10px 14px", borderRadius: 10, border: "1.5px solid #E2DBD0", fontFamily: "Source Sans 3", fontSize: 14, background: "#F8F4ED", outline: "none", boxSizing: "border-box" };
 
   if (showEmployerDoc) {
     return <EmployerDoc profile={profile} foerderungen={relevant} onBack={() => setShowEmployerDoc(false)} />;

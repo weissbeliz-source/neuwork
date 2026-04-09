@@ -5,7 +5,7 @@ import FoerderInfo from "./FoerderInfo";
 import {
   EMPTY_PROFILE, NAV_ITEMS, TAG_OPTIONS, NEED_CATEGORIES, JOBS, COMPANIES, WAITLIST_URL,
 } from "./constants";
-import { parseStoredField, serializeField, renderTagFieldPreview } from "./profileUtils";
+import { parseStoredField, serializeField } from "./profileUtils";
 
 function TagField({ label, options, value, onChange, placeholder, categories }) {
   const selectedTags = value?.tags || [];
