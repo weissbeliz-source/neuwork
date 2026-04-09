@@ -2,7 +2,44 @@ import { useEffect, useState } from "react";
 import { supabase } from "./supabase";
 import { parseStoredField } from "./profileUtils";
 
-export default function PublicProfile({ userId }) {
+const NEED_CATEGORIES_MAP = {
+  "Organisation & Kommunikation": ["Flexible Zeiten", "Teilzeit möglich", "Remote möglich", "Hybrid möglich", "Asynchrone Kommunikation", "Schriftliche Kommunikation", "Klare Kommunikation", "Klare Prioritäten", "Klare Aufgabenbeschreibung", "Klare Deadlines", "Vorhersehbare Abläufe", "Feste Routinen", "Strukturierte Einarbeitung", "Buddy / Ansprechperson", "Job-Coaching", "Zusätzliche Check-ins", "Mehr Bearbeitungszeit", "Angepasste Zielvorgaben", "Flexible Pausen", "Zusätzliche Pausen", "Weniger Meetings", "Meetings nur mit Agenda", "Protokolle nach Meetings", "Aufgaben in kleinen Schritten", "Erinnerungen / Prompts", "Einzelgespräche statt Gruppenrunden"],
+  "Neurodivergenz & Reizregulation": ["Reizarme Umgebung", "Ruhiger Arbeitsplatz", "Einzelbüro", "Ruheraum", "Noise-Cancelling erlaubt", "Kopfhörer erlaubt", "Keine Kamera-Pflicht", "Wenig Kontextwechsel", "Ununterbrochene Fokuszeit", "Visuelle Planungs-Tools", "Schriftliche Briefings", "Keine spontanen Anrufe", "Vorbereitung vor Meetings", "Masking-freie Kultur", "Psychologische Sicherheit", "Sensorische Rücksichtnahme", "Reduzierte soziale Pflichttermine", "Weniger Lärm", "Weniger grelles Licht", "Parfümarme Umgebung", "Fester Sitzplatz", "Rückzugsort bei Überlastung"],
+  "Mobilität & Barrierefreiheit": ["Barrierefreier Eingang", "Aufzug", "Rampe", "Automatische Türen", "Breite Wege / Türen", "Rollstuhlgerechter Arbeitsplatz", "Höhenverstellbarer Tisch", "Ergonomischer Stuhl", "Angepasste Arbeitsmittel", "Kurze Wege im Büro", "Parkplatz in der Nähe", "Barrierefreie Toilette", "Homeoffice statt Pendeln"],
+  "Sehen": ["Screenreader-kompatible Tools", "Tastaturbedienbare Software", "Große Schrift", "Hoher Kontrast", "Vergrößerungssoftware", "Vorlesefunktionen", "Gute Beleuchtung", "Blendfreies Licht"],
+  "Hören": ["Untertitel / Captions", "Live-Transkription", "Gebärdensprachdolmetschung", "Schriftliche Zusammenfassungen", "Chat statt Telefon", "Visuelle Alarme"],
+  "Lernen & Verstehen": ["Einfache Sprache", "Leichte Sprache", "Schritt-für-Schritt-Anleitungen", "Visuelle Anleitungen", "Mehr Zeit zum Lernen"],
+  "Energie & Gesundheit": ["Flexible Startzeiten", "Späterer Arbeitsbeginn", "Pacing / Energiemanagement", "Sitz- und Stehoption", "Temperaturkontrolle", "Zugang zu Wasser / Snacks / Medikamenten", "Termine um Behandlungen herum", "Reduzierte Reisetätigkeit", "Arbeiten von zuhause bei Schub / Erschöpfung"],
+};
+
+function categorizeNeeds(allNeeds) {
+  const result = {};
+  const uncategorized = [];
+  allNeeds.forEach(need => {
+    let found = false;
+    for (const [cat, tags] of Object.entries(NEED_CATEGORIES_MAP)) {
+      if (tags.includes(need)) { result[cat] = [...(result[cat] || []), need]; found = true; break; }
+    }
+    if (!found) uncategorized.push(need);
+  });
+  if (uncategorized.length) result["Weitere Bedürfnisse"] = uncategorized;
+  return result;
+}
+
+function CollapsibleSection({ title, children, defaultOpen = false, accent = "#A855F7" }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div style={{ borderBottom: "1px solid #1e1e1e" }}>
+      <button onClick={() => setOpen(!open)} style={{ width: "100%", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", background: "none", border: "none", cursor: "pointer", textAlign: "left" }}>
+        <span style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#888" }}>{title}</span>
+        <span style={{ color: accent, fontSize: 18, lineHeight: 1 }}>{open ? "−" : "+"}</span>
+      </button>
+      {open && <div style={{ paddingBottom: 16 }}>{children}</div>}
+    </div>
+  );
+}
+
+export default function PublicProfile({ userId, isPublic = false, onEdit }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -10,8 +47,7 @@ export default function PublicProfile({ userId }) {
     if (!userId) return;
     async function load() {
       setLoading(true);
-      const { data, error } = await supabase
-        .from("profiles").select("*").eq("id", userId).maybeSingle();
+      const { data, error } = await supabase.from("profiles").select("*").eq("id", userId).maybeSingle();
       if (!error && data) {
         setProfile({
           ...data,
@@ -30,15 +66,15 @@ export default function PublicProfile({ userId }) {
   }, [userId]);
 
   if (loading) return (
-    <div style={s.centered} role="status" aria-live="polite">
-      <p style={s.loadingText}>Profil wird geladen…</p>
+    <div style={{ minHeight: "100vh", background: "#0A0A0A", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <p style={{ color: "#555", fontFamily: "'Space Grotesk', sans-serif" }}>Lädt…</p>
     </div>
   );
 
   if (!profile) return (
-    <div style={s.centered} role="alert">
-      <p style={s.loadingText}>Profil nicht gefunden.</p>
-      <a href="/" style={s.link}>← Zurück zu mole</a>
+    <div style={{ minHeight: "100vh", background: "#0A0A0A", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
+      <p style={{ color: "#555", fontFamily: "'Space Grotesk', sans-serif" }}>Profil nicht gefunden.</p>
+      <a href="/" style={{ color: "#A855F7", fontFamily: "'Space Grotesk', sans-serif" }}>← Zurück</a>
     </div>
   );
 
@@ -50,48 +86,49 @@ export default function PublicProfile({ userId }) {
   const allWorkStyle = [...(profile.work_style?.tags || []), profile.work_style?.custom?.trim()].filter(Boolean);
   const allComm = [...(profile.communication_prefs?.tags || []), profile.communication_prefs?.custom?.trim()].filter(Boolean);
   const allTech = [...(profile.assistive_tech?.tags || []), profile.assistive_tech?.custom?.trim()].filter(Boolean);
+  const categorizedNeeds = categorizeNeeds(allNeeds);
+
+  const tag = (t, color = "#A855F7") => (
+    <span key={t} style={{ display: "inline-block", padding: "5px 12px", borderRadius: 6, background: color + "22", color, fontSize: 13, border: `1px solid ${color}44`, margin: "3px 4px 3px 0", fontFamily: "'Space Grotesk', sans-serif" }}>{t}</span>
+  );
 
   return (
     <div style={s.page}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Source+Sans+3:wght@400;600&display=swap');
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        :focus-visible { outline: 3px solid #1A1A1A; outline-offset: 3px; border-radius: 4px; }
-        .skip-link:focus { top: 0 !important; }
-        @media print {
-          .no-print { display: none !important; }
-          body { background: white; }
-          .card { box-shadow: none !important; border: 1px solid #ccc !important; page-break-inside: avoid; }
-        }
-        @media (max-width: 600px) {
-          .two-col { grid-template-columns: 1fr !important; }
-          .hero-inner { flex-direction: column !important; align-items: flex-start !important; }
-        }
-      `}</style>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap'); *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; } :focus-visible { outline: 3px solid #A855F7; outline-offset: 3px; } @media print { .no-print { display: none !important; } }`}</style>
 
-      <a href="#main-content" className="skip-link no-print" style={s.skipLink}>
-        Zum Hauptinhalt springen
-      </a>
+      {/* Skip Link */}
+      <a href="#main-content" style={{ position: "absolute", top: -100, left: 0, background: "#A855F7", color: "white", padding: "8px 16px", zIndex: 9999, textDecoration: "none", borderRadius: 4 }}>Zum Inhalt springen</a>
 
+      {/* Header */}
       <header style={s.header} className="no-print">
         <div style={s.headerInner}>
-          <a href="/" style={s.logoLink} aria-label="mole — zur Startseite">
-            <div style={s.logoIcon} aria-hidden="true">∞</div>
-            <span style={s.logoText}>mole</span>
+          <a href="/" style={s.logoLink}>
+            <div style={s.logoMark}>
+              <div style={s.lc1} /><div style={s.lc2} />
+            </div>
+            <div>
+              <p style={s.logoName}>Diffusion</p>
+              <p style={s.logoSub}>Different.Inclusion</p>
+            </div>
           </a>
-          <button onClick={() => window.print()} style={s.printBtn} aria-label="Profil drucken oder als PDF speichern">
-            Als PDF speichern
-          </button>
+          <div style={{ display: "flex", gap: 10 }} className="no-print">
+            {!isPublic && onEdit && (
+              <button onClick={onEdit} style={s.editBtn}>✏️ Bearbeiten</button>
+            )}
+            <button onClick={() => window.print()} style={s.pdfBtn} aria-label="Als PDF speichern">
+              ⬇ Als PDF
+            </button>
+          </div>
         </div>
       </header>
 
       <main id="main-content" style={s.main}>
 
         {/* Hero */}
-        <section aria-label="Profilübersicht" style={{ ...s.card, marginBottom: 16 }} className="card">
-          <div style={s.heroInner} className="hero-inner">
+        <div style={s.card}>
+          <div style={s.heroInner}>
             {profile.avatar_url ? (
-              <img src={profile.avatar_url} alt={`Profilfoto von ${profile.full_name}`} style={s.avatar} />
+              <img src={profile.avatar_url} alt={`Foto von ${profile.full_name}`} style={s.avatar} />
             ) : (
               <div style={s.avatarFallback} aria-hidden="true">
                 <span style={s.avatarInitials}>{initials}</span>
@@ -100,152 +137,108 @@ export default function PublicProfile({ userId }) {
             <div style={{ flex: 1 }}>
               <h1 style={s.name}>{profile.full_name || "Anonym"}</h1>
               {profile.headline && <p style={s.headline}>{profile.headline}</p>}
-              {profile.bio && <p style={s.bio}>{profile.bio}</p>}
+              {profile.bio && <p style={s.bio}>"{profile.bio}"</p>}
               <div style={s.badges}>
-                {profile.looking_for_work && (
-                  <span style={s.badgeGreen} role="status">✓ Offen für Stellen</span>
-                )}
-                {profile.work_model && (
-                  <span style={s.badgeGray}>📍 {profile.work_model}</span>
-                )}
-                {profile.availability && (
-                  <span style={s.badgeGray}>🗓 {profile.availability}</span>
-                )}
+                {profile.looking_for_work && <span style={s.badgeGreen}>✓ Offen für Stellen</span>}
+                {profile.work_model && <span style={s.badgeGray}>📍 {profile.work_model}</span>}
+                {profile.availability && <span style={s.badgeYellow}>🗓 {profile.availability}</span>}
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
         {/* Stärken */}
-        {(allStrengths.length > 0 || allStrengthsPro.length > 0) && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }} className="two-col">
+        {(allStrengths.length > 0 || allStrengthsPro.length > 0 || allSkills.length > 0) && (
+          <div style={s.card}>
             {allStrengths.length > 0 && (
-              <section aria-labelledby="strengths-heading" style={s.card} className="card">
-                <h2 id="strengths-heading" style={s.sectionHeading}>Persönliche Stärken</h2>
-                <div style={s.tagList} role="list">
-                  {allStrengths.map(t => <span key={t} style={s.tag} role="listitem">{t}</span>)}
-                </div>
-              </section>
+              <CollapsibleSection title="Persönliche Stärken" defaultOpen={true} accent="#A855F7">
+                <div>{allStrengths.map(t => tag(t, "#A855F7"))}</div>
+              </CollapsibleSection>
             )}
             {allStrengthsPro.length > 0 && (
-              <section aria-labelledby="strengths-pro-heading" style={s.card} className="card">
-                <h2 id="strengths-pro-heading" style={s.sectionHeading}>Fachliche Stärken</h2>
-                <div style={s.tagList} role="list">
-                  {allStrengthsPro.map(t => <span key={t} style={s.tag} role="listitem">{t}</span>)}
-                </div>
-              </section>
+              <CollapsibleSection title="Fachliche Stärken" defaultOpen={true} accent="#4ade80">
+                <div>{allStrengthsPro.map(t => tag(t, "#4ade80"))}</div>
+              </CollapsibleSection>
+            )}
+            {allSkills.length > 0 && (
+              <CollapsibleSection title="Skills & Tools" defaultOpen={true} accent="#facc15">
+                <div>{allSkills.map(t => tag(t, "#facc15"))}</div>
+              </CollapsibleSection>
+            )}
+            {profile.special_interests && (
+              <CollapsibleSection title="Spezialinteressen" defaultOpen={false} accent="#A855F7">
+                <p style={s.bodyText}>{profile.special_interests}</p>
+              </CollapsibleSection>
             )}
           </div>
         )}
 
-        {/* Spezialinteressen */}
-        {profile.special_interests && (
-          <section aria-labelledby="interests-heading" style={{ ...s.card, marginBottom: 16 }} className="card">
-            <h2 id="interests-heading" style={s.sectionHeading}>Spezialinteressen & Themen die mich begeistern</h2>
-            <p style={s.text}>{profile.special_interests}</p>
-          </section>
-        )}
-
-        {/* Skills */}
-        {allSkills.length > 0 && (
-          <section aria-labelledby="skills-heading" style={{ ...s.card, marginBottom: 16 }} className="card">
-            <h2 id="skills-heading" style={s.sectionHeading}>Skills</h2>
-            <div style={s.tagList} role="list">
-              {allSkills.map(t => (
-                <span key={t} style={{ ...s.tag, background: "#1A1A1A", color: "#F5F0E8" }} role="listitem">{t}</span>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Arbeitsstil + Kommunikation */}
-        {(allWorkStyle.length > 0 || allComm.length > 0) && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }} className="two-col">
+        {/* Arbeitsweise */}
+        {(allWorkStyle.length > 0 || allComm.length > 0 || allTech.length > 0) && (
+          <div style={s.card}>
             {allWorkStyle.length > 0 && (
-              <section aria-labelledby="workstyle-heading" style={s.card} className="card">
-                <h2 id="workstyle-heading" style={s.sectionHeading}>Wie ich am liebsten arbeite</h2>
-                <div style={s.tagList} role="list">
-                  {allWorkStyle.map(t => <span key={t} style={s.tag} role="listitem">{t}</span>)}
-                </div>
-              </section>
+              <CollapsibleSection title="Wie ich arbeite" defaultOpen={true} accent="#4ade80">
+                <div>{allWorkStyle.map(t => tag(t, "#4ade80"))}</div>
+              </CollapsibleSection>
             )}
             {allComm.length > 0 && (
-              <section aria-labelledby="comm-heading" style={s.card} className="card">
-                <h2 id="comm-heading" style={s.sectionHeading}>Kommunikationspräferenzen</h2>
-                <div style={s.tagList} role="list">
-                  {allComm.map(t => <span key={t} style={s.tag} role="listitem">{t}</span>)}
-                </div>
-              </section>
+              <CollapsibleSection title="Kommunikation" defaultOpen={false} accent="#4ade80">
+                <div>{allComm.map(t => tag(t, "#4ade80"))}</div>
+              </CollapsibleSection>
+            )}
+            {allTech.length > 0 && (
+              <CollapsibleSection title="Ich arbeite effektiv mit" defaultOpen={false} accent="#4ade80">
+                <div>{allTech.map(t => tag(t, "#4ade80"))}</div>
+              </CollapsibleSection>
             )}
           </div>
         )}
 
-        {/* Bedürfnisse */}
+        {/* Bedürfnisse — kategorisiert & aufklappbar */}
         {allNeeds.length > 0 && (
-          <section aria-labelledby="needs-heading" style={{ ...s.card, marginBottom: 16 }} className="card">
-            <h2 id="needs-heading" style={s.sectionHeading}>Was ich brauche, um gut arbeiten zu können</h2>
-            <p style={{ fontSize: 15, color: "#444", marginBottom: 14, lineHeight: 1.5 }}>
-              Diese Rahmenbedingungen helfen mir, mein Bestes zu geben:
-            </p>
-            <div style={s.tagList} role="list">
-              {allNeeds.map(t => (
-                <span key={t} style={{ ...s.tag, background: "#E8F0FF", color: "#1A3A8F", border: "1px solid #B8CCF8" }} role="listitem">{t}</span>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Hilfsmittel */}
-        {allTech.length > 0 && (
-          <section aria-labelledby="tech-heading" style={{ ...s.card, marginBottom: 16 }} className="card">
-            <h2 id="tech-heading" style={s.sectionHeading}>Ich arbeite effektiv mit</h2>
-            <div style={s.tagList} role="list">
-              {allTech.map(t => (
-                <span key={t} style={{ ...s.tag, background: "#F0F0F0", color: "#333" }} role="listitem">{t}</span>
-              ))}
-            </div>
-          </section>
+          <div style={s.card}>
+            <p style={s.sectionLabel}>Was ich brauche um gut zu arbeiten</p>
+            <p style={{ ...s.bodyText, marginBottom: 16, color: "#666" }}>Aufgeklappt sind die Kategorien die für mich relevant sind:</p>
+            {Object.entries(categorizedNeeds).map(([cat, needs]) => (
+              <CollapsibleSection key={cat} title={`${cat} (${needs.length})`} defaultOpen={needs.length <= 6} accent="#A855F7">
+                <div>{needs.map(t => tag(t, "#A855F7"))}</div>
+              </CollapsibleSection>
+            ))}
+          </div>
         )}
 
         {/* Werdegang */}
-        {(profile.experience || profile.education) && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }} className="two-col">
+        {(profile.experience || profile.education || profile.languages) && (
+          <div style={s.card}>
             {profile.experience && (
-              <section aria-labelledby="exp-heading" style={s.card} className="card">
-                <h2 id="exp-heading" style={s.sectionHeading}>Berufserfahrung</h2>
-                <p style={s.text}>{profile.experience}</p>
-              </section>
+              <CollapsibleSection title="Berufserfahrung" defaultOpen={true} accent="#facc15">
+                <p style={s.bodyText}>{profile.experience}</p>
+              </CollapsibleSection>
             )}
             {profile.education && (
-              <section aria-labelledby="edu-heading" style={s.card} className="card">
-                <h2 id="edu-heading" style={s.sectionHeading}>Werdegang</h2>
-                <p style={s.text}>{profile.education}</p>
-              </section>
+              <CollapsibleSection title="Werdegang" defaultOpen={true} accent="#facc15">
+                <p style={s.bodyText}>{profile.education}</p>
+              </CollapsibleSection>
             )}
-          </div>
-        )}
-
-        {/* Sprachen + Kontakt */}
-        {(profile.languages || profile.contact_info) && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }} className="two-col">
             {profile.languages && (
-              <section aria-labelledby="lang-heading" style={s.card} className="card">
-                <h2 id="lang-heading" style={s.sectionHeading}>Sprachen</h2>
-                <p style={s.text}>{profile.languages}</p>
-              </section>
-            )}
-            {profile.contact_info && (
-              <section aria-labelledby="contact-heading" style={s.card} className="card">
-                <h2 id="contact-heading" style={s.sectionHeading}>Kontakt</h2>
-                <p style={s.text}>{profile.contact_info}</p>
-              </section>
+              <CollapsibleSection title="Sprachen" defaultOpen={true} accent="#facc15">
+                <p style={s.bodyText}>{profile.languages}</p>
+              </CollapsibleSection>
             )}
           </div>
         )}
 
-        <footer style={s.footer} className="no-print">
-          <p style={s.footerText}>
-            Dieses Profil wurde mit <a href="/" style={s.link}>mole</a> erstellt — inklusives Jobportal
+        {/* Kontakt — nur wenn vorhanden und nicht öffentlich */}
+        {!isPublic && profile.contact_info && (
+          <div style={s.card}>
+            <p style={s.sectionLabel}>Kontakt</p>
+            <p style={s.bodyText}>{profile.contact_info}</p>
+          </div>
+        )}
+
+        <footer style={{ textAlign: "center", marginTop: 40, paddingBottom: 40 }} className="no-print">
+          <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, color: "#333" }}>
+            Erstellt mit <a href="/" style={{ color: "#A855F7" }}>Diffusion</a> — Different.Inclusion
           </p>
         </footer>
       </main>
@@ -254,33 +247,30 @@ export default function PublicProfile({ userId }) {
 }
 
 const s = {
-  page: { minHeight: "100vh", background: "#F5F0E8", fontFamily: "'Source Sans 3', sans-serif", color: "#1A1A1A" },
-  centered: { minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, background: "#F5F0E8", fontFamily: "'Source Sans 3', sans-serif" },
-  loadingText: { fontSize: 18, color: "#1A1A1A" },
-  skipLink: { position: "absolute", top: -100, left: 0, background: "#1A1A1A", color: "white", padding: "8px 16px", fontSize: 16, zIndex: 9999, textDecoration: "none" },
-  header: { background: "#1A1A1A" },
+  page: { minHeight: "100vh", background: "#0A0A0A", fontFamily: "'Space Grotesk', sans-serif", color: "white" },
+  header: { background: "#0A0A0A", borderBottom: "1px solid #1e1e1e", position: "sticky", top: 0, zIndex: 100 },
   headerInner: { maxWidth: 800, margin: "0 auto", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" },
-  logoLink: { display: "flex", alignItems: "center", gap: 10, textDecoration: "none" },
-  logoIcon: { width: 36, height: 36, background: "#F5F0E8", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, color: "#1A1A1A", fontWeight: 700 },
-  logoText: { fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: "#F5F0E8" },
-  printBtn: { background: "#F5F0E8", color: "#1A1A1A", border: "2px solid #F5F0E8", padding: "8px 18px", borderRadius: 6, fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "'Source Sans 3', sans-serif" },
+  logoLink: { display: "flex", alignItems: "center", gap: 12, textDecoration: "none" },
+  logoMark: { position: "relative", width: 36, height: 36 },
+  lc1: { position: "absolute", top: 0, left: 0, width: 24, height: 24, borderRadius: "50%", background: "#A855F7" },
+  lc2: { position: "absolute", bottom: 0, right: 0, width: 24, height: 24, borderRadius: "50%", background: "#4ade80", opacity: 0.85 },
+  logoName: { fontSize: 18, fontWeight: 700, color: "white", letterSpacing: "-0.5px" },
+  logoSub: { fontSize: 10, color: "#444", letterSpacing: "0.05em" },
+  editBtn: { background: "transparent", border: "1.5px solid #A855F7", color: "#A855F7", padding: "8px 16px", borderRadius: 8, cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 600 },
+  pdfBtn: { background: "#A855F7", border: "none", color: "white", padding: "8px 16px", borderRadius: 8, cursor: "pointer", fontFamily: "'Space Grotesk', sans-serif", fontSize: 13, fontWeight: 600 },
   main: { maxWidth: 800, margin: "0 auto", padding: "32px 24px 64px" },
-  card: { background: "white", borderRadius: 12, padding: "28px 32px", border: "1.5px solid #D0C8B8" },
-  heroInner: { display: "flex", gap: 24, alignItems: "center" },
-  avatar: { width: 120, height: 120, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #D0C8B8" },
-  avatarFallback: { width: 120, height: 120, borderRadius: "50%", background: "#1A1A1A", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 },
-  avatarInitials: { color: "white", fontSize: 36, fontWeight: 700, fontFamily: "'Source Sans 3', sans-serif" },
-  name: { fontFamily: "'Playfair Display', serif", fontSize: 30, fontWeight: 700, color: "#1A1A1A", marginBottom: 6, lineHeight: 1.2 },
-  headline: { fontSize: 17, color: "#333", lineHeight: 1.5, marginBottom: 8 },
-  bio: { fontSize: 15, color: "#444", lineHeight: 1.65, marginBottom: 12, fontStyle: "italic" },
+  card: { background: "#141414", border: "1px solid #1e1e1e", borderRadius: 14, padding: "24px 28px", marginBottom: 16 },
+  heroInner: { display: "flex", gap: 24, alignItems: "flex-start" },
+  avatar: { width: 120, height: 120, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: "2px solid #A855F7" },
+  avatarFallback: { width: 120, height: 120, borderRadius: "50%", background: "#A855F7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 },
+  avatarInitials: { color: "white", fontSize: 36, fontWeight: 700 },
+  name: { fontSize: 28, fontWeight: 700, color: "white", marginBottom: 6, letterSpacing: "-0.5px" },
+  headline: { fontSize: 16, color: "#aaa", marginBottom: 8, lineHeight: 1.5 },
+  bio: { fontSize: 14, color: "#666", lineHeight: 1.65, marginBottom: 12, fontStyle: "italic" },
   badges: { display: "flex", flexWrap: "wrap", gap: 8 },
-  badgeGreen: { background: "#D4EDDA", color: "#155724", fontSize: 13, fontWeight: 600, padding: "4px 12px", borderRadius: 6, border: "1px solid #A3D5AF" },
-  badgeGray: { background: "#F0EBE0", color: "#3A3330", fontSize: 13, fontWeight: 600, padding: "4px 12px", borderRadius: 6, border: "1px solid #C8BFB0" },
-  sectionHeading: { fontSize: 13, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em", color: "#555", marginBottom: 14, fontFamily: "'Source Sans 3', sans-serif" },
-  tagList: { display: "flex", flexWrap: "wrap", gap: 8 },
-  tag: { display: "inline-block", padding: "6px 14px", borderRadius: 6, background: "#F0EBE0", color: "#1A1A1A", fontSize: 14, border: "1px solid #C8BFB0", lineHeight: 1.4 },
-  text: { fontSize: 15, color: "#333", lineHeight: 1.7 },
-  footer: { marginTop: 48, textAlign: "center" },
-  footerText: { fontSize: 14, color: "#666" },
-  link: { color: "#1A1A1A", fontWeight: 600 },
+  badgeGreen: { background: "#4ade8022", color: "#4ade80", fontSize: 12, fontWeight: 600, padding: "4px 12px", borderRadius: 6, border: "1px solid #4ade8044" },
+  badgeGray: { background: "#ffffff11", color: "#aaa", fontSize: 12, fontWeight: 600, padding: "4px 12px", borderRadius: 6, border: "1px solid #333" },
+  badgeYellow: { background: "#facc1522", color: "#facc15", fontSize: 12, fontWeight: 600, padding: "4px 12px", borderRadius: 6, border: "1px solid #facc1544" },
+  sectionLabel: { fontSize: 13, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#555", marginBottom: 12 },
+  bodyText: { fontSize: 15, color: "#aaa", lineHeight: 1.7 },
 };
