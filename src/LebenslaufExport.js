@@ -27,10 +27,6 @@ function CVPage({ children }) {
   );
 }
 
-function Divider({ color = "#1e3a5f" }) {
-  return <div style={{ height: 2, background: color, margin: "6px 0 16px" }} />;
-}
-
 function SectionTitle({ children, color = "#1e3a5f" }) {
   return (
     <div style={{ marginTop: 28, marginBottom: 4 }}>
@@ -41,16 +37,6 @@ function SectionTitle({ children, color = "#1e3a5f" }) {
         </h2>
         <div style={{ height: 1, background: "#ccc", flex: 1 }} />
       </div>
-    </div>
-  );
-}
-
-function DataRow({ label, value }) {
-  if (!value) return null;
-  return (
-    <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 8, marginBottom: 6, fontSize: 13 }}>
-      <span style={{ color: "#888", fontFamily: "'Schibsted Grotesk', Arial", fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em", paddingTop: 2 }}>{label}</span>
-      <span style={{ color: "#1a1a2e", fontFamily: "'Schibsted Grotesk', Arial", fontWeight: 500 }}>{value}</span>
     </div>
   );
 }
@@ -107,22 +93,6 @@ function ExperienceEntry({ text }) {
             ))}
           </div>
         </div>
-      ))}
-    </div>
-  );
-}
-
-function TagList({ tags, color = "#1e3a5f" }) {
-  if (!tags || tags.length === 0) return null;
-  return (
-    <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
-      {tags.map(t => (
-        <span key={t} style={{
-          padding: "3px 10px", borderRadius: 4,
-          background: color + "18", color,
-          border: `1px solid ${color}33`,
-          fontSize: 12, fontFamily: "'Schibsted Grotesk', Arial",
-        }}>{t}</span>
       ))}
     </div>
   );
