@@ -4,7 +4,7 @@ import AuthScreen from "./AuthScreen";
 import FoerderInfo from "./FoerderInfo";
 import PublicProfile from "./PublicProfile";
 import {
-  EMPTY_PROFILE, TAG_OPTIONS, NEED_CATEGORIES, JOBS,
+  EMPTY_PROFILE, TAG_OPTIONS, NEED_CATEGORIES,
 } from "./constants";
 import { parseStoredField, serializeField } from "./profileUtils";
 
