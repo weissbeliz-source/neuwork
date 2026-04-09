@@ -54,7 +54,7 @@ function TagField({ label, options, value, onChange, placeholder, categories }) 
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {cat.tags.map(tag => {
                       const sel = selectedTags.includes(tag);
-                      return <button key={tag} type="button" onClick={() => toggleTag(tag)} style={{ padding: "5px 12px", borderRadius: 6, border: `1px solid ${sel ? "#A855F7" : "#ff69b4"}`, background: sel ? "#A855F722" : "transparent", color: sel ? "#A855F7" : "#888", fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, cursor: "pointer" }}>{tag}</button>;
+                      return <button key={tag} type="button" onClick={() => toggleTag(tag)} style={{ padding: "5px 12px", borderRadius: 6, border: `1px solid ${sel ? "#A855F7" : "#ff69b4"}`, background: sel ? "#23375b" : "transparent", color: sel ? "#A855F7" : "#888", fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, cursor: "pointer" }}>{tag}</button>;
                     })}
                   </div>
                 </div>
@@ -64,7 +64,7 @@ function TagField({ label, options, value, onChange, placeholder, categories }) 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 12 }}>
               {options.map(tag => {
                 const sel = selectedTags.includes(tag);
-                return <button key={tag} type="button" onClick={() => toggleTag(tag)} style={{ padding: "5px 12px", borderRadius: 6, border: `1px solid ${sel ? "#A855F7" : "#ff69b4"}`, background: sel ? "#A855F722" : "transparent", color: sel ? "#A855F7" : "#888", fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, cursor: "pointer" }}>{tag}</button>;
+                return <button key={tag} type="button" onClick={() => toggleTag(tag)} style={{ padding: "5px 12px", borderRadius: 6, border: `1px solid ${sel ? "#A855F7" : "#ff69b4"}`, background: sel ? "#23375b" : "transparent", color: sel ? "#A855F7" : "#888", fontFamily: "'Space Grotesk', sans-serif", fontSize: 12, cursor: "pointer" }}>{tag}</button>;
               })}
             </div>
           )}
@@ -277,7 +277,7 @@ export default function MainApp() {
           <nav style={{ display: "flex", gap: 2 }}>
             {NAV.map(item => (
               <button key={item.id} className="nav-btn" onClick={() => { setActiveNav(item.id); if (item.id === "profil") setProfileMode("view"); }}
-                style={{ padding: "8px 14px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 500, background: activeNav === item.id ? "#A855F722" : "transparent", color: activeNav === item.id ? "#A855F7" : "#888", borderBottom: activeNav === item.id ? "2px solid #A855F7" : "2px solid transparent" }}>
+                style={{ padding: "8px 14px", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 13, fontWeight: 500, background: activeNav === item.id ? "#23375b" : "transparent", color: activeNav === item.id ? "#A855F7" : "#888", borderBottom: activeNav === item.id ? "2px solid #A855F7" : "2px solid transparent" }}>
                 {item.label}
               </button>
             ))}
@@ -334,7 +334,7 @@ export default function MainApp() {
 
             {/* Bearbeitungsmodus Banner */}
             {profileMode === "edit" && (
-              <div className="edit-banner" style={{ background: "#A855F722", border: "2px solid #A855F7", borderRadius: 10, padding: "10px 16px", marginBottom: 20, display: "flex", alignItems: "center", gap: 10 }}>
+              <div className="edit-banner" style={{ background: "#23375b", border: "2px solid #A855F7", borderRadius: 10, padding: "10px 16px", marginBottom: 20, display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ fontSize: 18 }}>✏️</span>
                 <p style={{ fontSize: 14, color: "#4169e1", fontWeight: 600 }}>Du bist im Bearbeitungsmodus — Änderungen werden erst nach "Speichern" übernommen.</p>
               </div>
@@ -553,11 +553,11 @@ export default function MainApp() {
             <p style={{ fontSize: 15, color: "#666", marginBottom: 24 }}>Menschen die ihr inklusives Profil öffentlich teilen — als Inspiration und Ermutigung.</p>
 
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 28 }}>
-              <button onClick={() => setVorbildFilter("")} style={{ padding: "6px 14px", borderRadius: 20, border: "1px solid", borderColor: vorbildFilter === "" ? "#A855F7" : "#ff69b4", background: vorbildFilter === "" ? "#A855F722" : "transparent", color: vorbildFilter === "" ? "#A855F7" : "#666", cursor: "pointer", fontSize: 13 }}>
+              <button onClick={() => setVorbildFilter("")} style={{ padding: "6px 14px", borderRadius: 20, border: "1px solid", borderColor: vorbildFilter === "" ? "#A855F7" : "#ff69b4", background: vorbildFilter === "" ? "#23375b" : "transparent", color: vorbildFilter === "" ? "#A855F7" : "#666", cursor: "pointer", fontSize: 13 }}>
                 Alle
               </button>
               {ROLEMODEL_TAGS.map(tag => (
-                <button key={tag} onClick={() => setVorbildFilter(tag)} style={{ padding: "6px 14px", borderRadius: 20, border: "1px solid", borderColor: vorbildFilter === tag ? "#A855F7" : "#ff69b4", background: vorbildFilter === tag ? "#A855F722" : "transparent", color: vorbildFilter === tag ? "#A855F7" : "#666", cursor: "pointer", fontSize: 13 }}>
+                <button key={tag} onClick={() => setVorbildFilter(tag)} style={{ padding: "6px 14px", borderRadius: 20, border: "1px solid", borderColor: vorbildFilter === tag ? "#A855F7" : "#ff69b4", background: vorbildFilter === tag ? "#23375b" : "transparent", color: vorbildFilter === tag ? "#A855F7" : "#666", cursor: "pointer", fontSize: 13 }}>
                   {tag}
                 </button>
               ))}
@@ -578,9 +578,9 @@ export default function MainApp() {
                   const initials = v.full_name?.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() || "?";
                   const tags = v.rolemodel_tags?.split(",").map(t => t.trim()).filter(Boolean) || [];
                   return (
-                    <a key={v.id} href={`/profil/${v.id}`} style={{ background: "#141414", border: "1px solid #1e1e1e", borderRadius: 14, padding: "20px", textDecoration: "none", display: "block", transition: "border-color 0.15s" }}
+                    <a key={v.id} href={`/profil/${v.id}`} style={{ background: "#4169e1, border: "1px solid #ff69b4", borderRadius: 14, padding: "20px", textDecoration: "none", display: "block", transition: "border-color 0.15s" }}
                       onMouseEnter={e => e.currentTarget.style.borderColor = "#A855F7"}
-                      onMouseLeave={e => e.currentTarget.style.borderColor = "#1e1e1e"}>
+                      onMouseLeave={e => e.currentTarget.style.borderColor = "#ffd700" }>
                       <div style={{ display: "flex", gap: 14, alignItems: "center", marginBottom: 14 }}>
                         {v.avatar_url ? (
                           <img src={v.avatar_url} alt={v.full_name} style={{ width: 52, height: 52, borderRadius: "50%", objectFit: "cover", border: "2px solid #A855F7" }} />
@@ -593,7 +593,7 @@ export default function MainApp() {
                         </div>
                       </div>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                        {tags.map(tag => <span key={tag} style={{ padding: "3px 8px", borderRadius: 4, background: "#A855F722", color: "#4169e1", fontSize: 11, border: "1px solid #A855F744" }}>{tag}</span>)}
+                        {tags.map(tag => <span key={tag} style={{ padding: "3px 8px", borderRadius: 4, background: "#23375b", color: "#4169e1", fontSize: 11, border: "1px solid #A855F744" }}>{tag}</span>)}
                         {v.looking_for_work && <span style={{ padding: "3px 8px", borderRadius: 4, background: "#4ade8022", color: "#4ade80", fontSize: 11, border: "1px solid #4ade8044" }}>Offen für Stellen</span>}
                       </div>
                     </a>
@@ -611,7 +611,7 @@ export default function MainApp() {
             <p style={{ fontSize: 15, color: "#666", marginBottom: 32 }}>Teile Erfahrungen, Tipps und Sorgen — anonym oder mit Namen.</p>
 
             {/* Neuer Beitrag */}
-            <div style={{ background: "#141414", border: "1px solid #1e1e1e", borderRadius: 14, padding: "20px 24px", marginBottom: 28 }}>
+            <div style={{ background: "#141414", border: "1px solid #ff69b4", borderRadius: 14, padding: "20px 24px", marginBottom: 28 }}>
               <p style={{ fontSize: 14, fontWeight: 700, marginBottom: 14, color: "#aaa" }}>Neuer Beitrag</p>
               <div style={{ display: "grid", gridTemplateColumns: "1fr auto", gap: 10, marginBottom: 12 }} className="two-col">
                 <select value={beitragKategorie} onChange={e => setBeitragKategorie(e.target.value)}
@@ -647,7 +647,7 @@ export default function MainApp() {
                   const catColors = { "Erfahrung": "#A855F7", "Tipp": "#4ade80", "Arbeitgeber": "#facc15", "Amt / Behörde": "#f97316", "Frage": "#38bdf8", "Erfolg": "#4ade80", "Sonstiges": "#888" };
                   const catColor = catColors[b.kategorie] || "#888";
                   return (
-                    <div key={b.id} style={{ background: "#141414", border: "1px solid #1e1e1e", borderRadius: 12, padding: "16px 20px" }}>
+                    <div key={b.id} style={{ background: "#141414", border: "1px solid #ff69b4", borderRadius: 12, padding: "16px 20px" }}>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                           <span style={{ padding: "3px 10px", borderRadius: 6, background: catColor + "22", color: catColor, fontSize: 11, fontWeight: 600, border: `1px solid ${catColor}44` }}>{b.kategorie}</span>
