@@ -578,7 +578,7 @@ export default function MainApp() {
                   const initials = v.full_name?.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() || "?";
                   const tags = v.rolemodel_tags?.split(",").map(t => t.trim()).filter(Boolean) || [];
                   return (
-                    <a key={v.id} href={`/profil/${v.id}`} style={{ background: "#4169e1, border: "1px solid #ff69b4", borderRadius: 14, padding: "20px", textDecoration: "none", display: "block", transition: "border-color 0.15s" }}
+                    <a key={v.id} href={`/profil/${v.id}`} style={{ background: "#4169e1", border: "1px solid #ff69b4", borderRadius: 14, padding: "20px", textDecoration: "none", display: "block", transition: "border-color 0.15s" }}
                       onMouseEnter={e => e.currentTarget.style.borderColor = "#A855F7"}
                       onMouseLeave={e => e.currentTarget.style.borderColor = "#ffd700" }>
                       <div style={{ display: "flex", gap: 14, alignItems: "center", marginBottom: 14 }}>
