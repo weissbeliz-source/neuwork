@@ -106,8 +106,6 @@ export default function AnschreibenExport({ profile, onClose }) {
     gruss: "Mit freundlichen Grüßen",
     absenderName: profile?.full_name || "",
     absenderAdresse: "",
-    absenderEmail: profile?.contact_info?.match(/[\w.-]+@[\w.-]+\.\w+/)?.[0] || "",
-    absenderTel: profile?.contact_info?.match(/[\d\s\+\/\-]{8,}/)?.[0]?.trim() || "",
   });
 
   const [absatz1, setAbsatz1] = useState("");
