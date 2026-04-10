@@ -20,7 +20,7 @@ const PRINT_STYLES = `
 
 function LetterPage({ children }) {
   return (
-    <div className="letter-page" style={{ background: "white", padding: "48px 56px", minHeight: "270mm", fontFamily: FF }}>
+    <div className="letter-page" style={{ background: "white", padding: "48px 56px", minHeight: "270mm", fontFamily: FF, display: "flex", flexDirection: "column" }}>
       {children}
     </div>
   );
@@ -139,7 +139,12 @@ export default function AnschreibenExport({ profile, onClose }) {
         </div>
       </div>
 
-      {/* DRUCKSEITE */}
+      {/* DRUCKSEITE — Vorschau */}
+      <div className="no-print" style={{ maxWidth: 794, margin: "0 auto 12px" }}>
+        <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+          Vorschau — wird so gedruckt:
+        </p>
+      </div>
       <LetterPage>
         {/* Header */}
         <HeaderBar name={profile?.full_name} contact={profile?.contact_info} />
@@ -205,7 +210,7 @@ export default function AnschreibenExport({ profile, onClose }) {
         </p>
 
         {/* Footer */}
-        <div style={{ position: "absolute", bottom: 32, left: 56, right: 56, textAlign: "center" }}>
+        <div style={{ marginTop: "auto", paddingTop: 48, textAlign: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16, justifyContent: "center", marginBottom: 8 }}>
             <div style={{ height: 1, flex: 1, background: "#ddd" }} />
             <span style={{ fontSize: 14, color: "#aaa" }}>∨</span>
