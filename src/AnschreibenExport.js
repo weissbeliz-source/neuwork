@@ -126,7 +126,7 @@ export default function AnschreibenExport({ profile, onClose }) {
     setAbsatz4(paras[3] || "");
   };
 
-  // Claude API aufrufen
+  // Edge Function aufrufen (kein CORS-Problem, API-Key sicher im Backend)
   const generiereAnschreiben = async () => {
     if (!form.firma || !form.position) {
       setAiError("Bitte Firma und Position ausfüllen.");
@@ -136,19 +136,24 @@ export default function AnschreibenExport({ profile, onClose }) {
     setAiError("");
 
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          messages: [{ role: "user", content: buildPrompt(profile, form) }],
-        }),
-      });
+      const response = await fetch(
+        "https://zyeixswgxrwybolobnzn.supabase.co/functions/v1/generate-anschreiben",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: buildPrompt(profile, form) }),
+        }
+      );
 
       const data = await response.json();
-      const text = data.content?.[0]?.text || "";
 
+      if (data.error) {
+        setAiError("Fehler: " + data.error);
+        setAiLoading(false);
+        return;
+      }
+
+      const text = data.text || "";
       if (!text) {
         setAiError("Keine Antwort erhalten. Bitte nochmal versuchen.");
         setAiLoading(false);
@@ -158,7 +163,7 @@ export default function AnschreibenExport({ profile, onClose }) {
       parseAbsaetze(text);
       setAiGenerated(true);
     } catch (err) {
-      setAiError("Fehler beim Generieren: " + err.message);
+      setAiError("Verbindungsfehler: " + err.message);
     }
     setAiLoading(false);
   };
