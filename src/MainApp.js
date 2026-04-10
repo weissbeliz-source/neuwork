@@ -721,14 +721,11 @@ export default function MainApp() {
                           <div>
                             <label style={lbl}>Berufserfahrung</label>
                             <p style={{ fontSize: 12, color: "#64748B", marginBottom: 6 }}>Format: "09.2022 – heute  Firma GmbH" → neue Zeile "Position" → "- Aufgabe"</p>
-                            <textarea value={profile.experience} onChange={e => setProfile({ ...profile, experience: e.target.value })} placeholder={"09.2022 – heute  Stadt Ulm
-Fallmanagement
-- Individuelle Beratung"} rows={6} style={inp({ resize: "vertical" })} />
+                            <textarea value={profile.experience} onChange={e => setProfile({ ...profile, experience: e.target.value })} placeholder={"09.2022 – heute  Stadt Ulm\nFallmanagement\n- Individuelle Beratung"} rows={6} style={inp({ resize: "vertical" })} />
                           </div>
                           <div>
                             <label style={lbl}>Bildungsweg</label>
-                            <textarea value={profile.education} onChange={e => setProfile({ ...profile, education: e.target.value })} placeholder={"10.2018 – 03.2022  Hochschule XY
-B.A. Soziale Arbeit"} rows={4} style={inp({ resize: "vertical" })} />
+                            <textarea value={profile.education} onChange={e => setProfile({ ...profile, education: e.target.value })} placeholder={"10.2018 – 03.2022  Hochschule XY\nB.A. Soziale Arbeit"} rows={4} style={inp({ resize: "vertical" })} />
                           </div>
                           <div><label style={lbl}>Sprachen</label><input type="text" value={profile.languages} onChange={e => setProfile({ ...profile, languages: e.target.value })} placeholder="Deutsch (Muttersprache), Englisch (B2)" style={inp()} /></div>
                         </div>
