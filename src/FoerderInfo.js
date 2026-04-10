@@ -316,7 +316,6 @@ const LEBENSBEREICHE = [
   { id: "ausbildung", label: "🔧 Ausbildung", desc: "Berufseinstieg" },
   { id: "schule", label: "📖 Schule", desc: "Nachteilsausgleich" },
   { id: "studium", label: "🎓 Studium", desc: "Hochschule" },
-  { id: "alltag", label: "🌍 Alltag & Teilhabe", desc: "Assistenz & mehr" },
   { id: "kontakt", label: "📞 Wer hilft?", desc: "Zuständigkeiten" },
 ];
 
@@ -344,12 +343,6 @@ const CHECK_FRAGEN = [
     frage: "Gibt es spezifische Herausforderungen bei dir?",
     typ: "multi",
     optionen: ["Konzentration / Fokus", "Reizüberflutung / Lärm", "Struktur & Organisation", "Lesen / Schreiben / Prüfungen", "Kommunikation", "Energie / Erschöpfung", "Mobilität / körperliche Einschränkung", "Sehen / Hören"],
-  },
-  {
-    id: "wohnsituation",
-    frage: "Wie ist deine aktuelle Lebenssituation?",
-    typ: "single",
-    optionen: ["Ich wohne selbständig", "Ich wohne mit Unterstützung", "Ich bin in einer betreuten Einrichtung", "Keine Angabe"],
   },
 ];
 
