@@ -77,7 +77,7 @@ function TagCloud({ tags, color = COLORS.purple }) {
   );
 }
 
-export default function PublicProfile({ userId, isPublic = false, onEdit }) {
+export default function PublicProfile({ userId, isPublic = false }) {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -157,27 +157,6 @@ export default function PublicProfile({ userId, isPublic = false, onEdit }) {
         @media (max-width: 600px) { .hero-flex { flex-direction: column !important; } }
       `}</style>
 
-      {/* Header — nur im eingebetteten Modus */}
-      {!isPublic && (
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginBottom: 20 }} className="no-print">
-          <button onClick={() => window.print()} style={{
-            background: "transparent", border: `1.5px solid ${COLORS.border}`,
-            color: "#CBD5E1", padding: "10px 18px", borderRadius: 10,
-            cursor: "pointer", fontFamily: FONT, fontSize: 14, fontWeight: 500,
-          }}>
-            ⬇ Als PDF
-          </button>
-          {onEdit && (
-            <button onClick={onEdit} style={{
-              background: COLORS.purple, border: "none", color: "white",
-              padding: "10px 20px", borderRadius: 10, cursor: "pointer",
-              fontFamily: FONT, fontSize: 14, fontWeight: 600,
-            }}>
-              ✏️ Bearbeiten
-            </button>
-          )}
-        </div>
-      )}
 
       {/* Hero */}
       <div style={card}>

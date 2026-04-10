@@ -376,7 +376,7 @@ export default function MainApp() {
 
             {/* PROFILANSICHT */}
             {profileMode === "view" && (
-              <PublicProfile userId={user?.id} isPublic={false} onEdit={() => setProfileMode("edit")} />
+              <PublicProfile userId={user?.id} isPublic={false} />
             )}
 
             {/* BEARBEITUNGSMODUS */}
