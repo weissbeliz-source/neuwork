@@ -108,7 +108,7 @@ export default function LebenslaufExport({ profile, onClose }) {
     bio: profile?.bio || "",
     contact: profile?.contact_info || "",
     email: profile?.contact_info?.match(/[\w.-]+@[\w.-]+\.\w+/)?.[0] || "",
-    tel: profile?.contact_info?.match(/[\d\s+/\-]{8,}/)?.[0]?.trim() || "",
+    tel: profile?.contact_info?.match(/[\d\s+/-]{8,}/)?.[0]?.trim() || "",
     experience: profile?.experience || "",
     education: profile?.education || "",
     languages: profile?.languages || "",
