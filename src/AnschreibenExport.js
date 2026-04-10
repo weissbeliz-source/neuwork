@@ -188,13 +188,33 @@ export default function AnschreibenExport({ profile, onClose }) {
       <style>{PRINT_STYLES}</style>
 
       {/* Toolbar */}
-      <div className="no-print" style={{ maxWidth: 794, margin: "0 auto 20px", display: "flex", gap: 10, alignItems: "center" }}>
+      <div className="no-print" style={{ maxWidth: 794, margin: "0 auto 20px", display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
         <p style={{ fontSize: 13, color: "#94A3B8", marginRight: "auto" }}>
           ✉️ KI-gestütztes Anschreiben — automatisch aus deinem Profil generiert
         </p>
         <button onClick={onClose} style={{ background: "transparent", border: `1.5px solid ${COLORS.border}`, color: "#CBD5E1", padding: "10px 20px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, fontSize: 14 }}>
           ← Zurück
         </button>
+        {/* E-Mail Bewerbermappe */}
+        {aiGenerated && f("firma") && (
+          <button onClick={() => {
+            const name = form.absenderName || profile?.full_name || "";
+            const betreff = encodeURIComponent(`Bewerbung als ${f("position")} – ${name}`);
+            const body = encodeURIComponent(
+              `${f("anrede")},\n\n` +
+              `hiermit bewerbe ich mich auf die ausgeschriebene Stelle als ${f("position")} bei ${f("firma")}. ` +
+              `Im Anhang finden Sie mein Anschreiben sowie meinen Lebenslauf.\n\n` +
+              `Über eine Einladung zu einem persönlichen Gespräch freue ich mich sehr.\n\n` +
+              `${f("gruss")}\n${name}\n\n` +
+              `---\n` +
+              `💡 Hinweis: Bitte Anschreiben und Lebenslauf als PDF-Dateien anhängen.\n` +
+              `Profil auf Diffusion: ${window.location.origin}/profil/${profile?.id || ""}`
+            );
+            window.location.href = `mailto:?subject=${betreff}&body=${body}`;
+          }} style={{ background: COLORS.green, border: "none", color: "#0A0A0A", padding: "10px 20px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, fontSize: 14, fontWeight: 700 }}>
+            📧 E-Mail vorbereiten
+          </button>
+        )}
         <button onClick={() => window.print()} style={{ background: ACCENT, border: "none", color: "white", padding: "10px 24px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, fontSize: 14, fontWeight: 700 }}>
           ⬇ Als PDF speichern
         </button>
@@ -203,13 +223,21 @@ export default function AnschreibenExport({ profile, onClose }) {
       {/* SCHRITT 1 — Stelle eingeben */}
       <div className="no-print" style={{ maxWidth: 794, margin: "0 auto 20px", background: COLORS.bgCard, borderRadius: 12, padding: "24px 28px", border: `1px solid ${COLORS.border}` }}>
         <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 700, color: "#F8FAFC", marginBottom: 6 }}>
-          Schritt 1 — Stelle angeben
+          Schritt 1 — Stelle & Absender angeben
         </p>
         <p style={{ fontFamily: FONT, fontSize: 13, color: "#94A3B8", marginBottom: 20 }}>
-          Füll die wichtigsten Felder aus — dann generiert Claude ein passendes Anschreiben für dich.
+          Füll die wichtigsten Felder aus — dann generiert Claude ein vollständiges, druckfertiges Anschreiben.
         </p>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+          <div>
+            <label style={labelStyle}>Dein vollständiger Name *</label>
+            <input value={form.absenderName || profile?.full_name || ""} onChange={e => set("absenderName", e.target.value)} placeholder="z.B. Beliz Weiß" style={{ ...inputStyle, resize: "none" }} />
+          </div>
+          <div>
+            <label style={labelStyle}>Deine Adresse</label>
+            <input value={form.absenderAdresse || ""} onChange={e => set("absenderAdresse", e.target.value)} placeholder="z.B. Musterstr. 1, 89079 Ulm" style={{ ...inputStyle, resize: "none" }} />
+          </div>
           <div>
             <label style={labelStyle}>Firma / Unternehmen *</label>
             <input value={f("firma")} onChange={e => set("firma", e.target.value)} placeholder="z.B. Muster GmbH" style={{ ...inputStyle, resize: "none" }} />
@@ -280,14 +308,14 @@ export default function AnschreibenExport({ profile, onClose }) {
       {/* SCHRITT 2 — Text bearbeiten (nur nach KI-Generierung) */}
       {aiGenerated && (
         <div className="no-print" style={{ maxWidth: 794, margin: "0 auto 20px", background: COLORS.bgCard, borderRadius: 12, padding: "24px 28px", border: `1px solid ${COLORS.greenBorder}` }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+          <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 16 }}>
             <span style={{ fontSize: 20 }}>✅</span>
             <div>
               <p style={{ fontFamily: FONT, fontSize: 15, fontWeight: 700, color: COLORS.green }}>
                 Anschreiben generiert!
               </p>
-              <p style={{ fontFamily: FONT, fontSize: 13, color: "#94A3B8" }}>
-                Lies den Text durch und passe ihn bei Bedarf an.
+              <p style={{ fontFamily: FONT, fontSize: 13, color: "#94A3B8", marginTop: 4, lineHeight: 1.6 }}>
+                Lies den Text durch und passe ihn an. Dann: <strong style={{ color: "#CBD5E1" }}>⬇ Als PDF speichern</strong> — und als Anhang zur E-Mail hinzufügen. Mit <strong style={{ color: "#CBD5E1" }}>📧 E-Mail vorbereiten</strong> öffnet sich dein E-Mail-Programm mit kurzem Begleittext.
               </p>
             </div>
           </div>
@@ -315,7 +343,7 @@ export default function AnschreibenExport({ profile, onClose }) {
 
       {/* DRUCKSEITE */}
       <LetterPage>
-        <HeaderBar name={profile?.full_name} contact={profile?.contact_info} />
+        <HeaderBar name={form.absenderName || profile?.full_name} contact={form.absenderAdresse ? `${form.absenderAdresse}${profile?.contact_info ? " | " + profile.contact_info : ""}` : profile?.contact_info} />
 
         {/* Empfänger */}
         <div style={{ marginBottom: 32 }}>
@@ -367,7 +395,7 @@ export default function AnschreibenExport({ profile, onClose }) {
 
         {/* Unterschrift */}
         <p style={{ fontFamily: FF, fontSize: 13, color: "#1a1a2e", fontWeight: 600 }}>
-          {profile?.full_name}
+          {form.absenderName || profile?.full_name || "[Name]"}
         </p>
 
         {/* Footer */}

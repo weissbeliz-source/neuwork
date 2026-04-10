@@ -188,16 +188,26 @@ export default function LebenslaufExport({ profile, onClose }) {
         <div style={{ textAlign: "center", marginBottom: 16, color: "#ccc", fontSize: 20 }}>∨</div>
 
         <div style={{ border: "1px solid #d8e4f0", borderRadius: 6, padding: "36px 48px 32px", textAlign: "center" }}>
-          <p style={{ fontFamily: FF, fontSize: 20, color: ACCENT, fontWeight: 500, marginBottom: 4 }}>
-            {f("name").split(" ")[0]}
-          </p>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 24, marginBottom: 8 }}>
-            <div style={{ height: 1, width: 52, background: "#ccc" }} />
-            <h1 style={{ fontFamily: FF, fontSize: 38, fontWeight: 700, color: "#1a1a2e", letterSpacing: "-1px" }}>
-              {f("name").split(" ").slice(1).join(" ") || f("name")}
-            </h1>
-            <div style={{ height: 1, width: 52, background: "#ccc" }} />
-          </div>
+          {/* Name — Vorname klein, Nachname groß */}
+          {(() => {
+            const parts = f("name").trim().split(" ");
+            const vorname = parts.slice(0, -1).join(" ") || f("name");
+            const nachname = parts.length > 1 ? parts[parts.length - 1] : "";
+            return (
+              <>
+                <p style={{ fontFamily: FF, fontSize: 20, color: ACCENT, fontWeight: 500, marginBottom: 4 }}>
+                  {vorname}
+                </p>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 24, marginBottom: 8 }}>
+                  <div style={{ height: 1, width: 52, background: "#ccc" }} />
+                  <h1 style={{ fontFamily: FF, fontSize: 38, fontWeight: 700, color: "#1a1a2e", letterSpacing: "-1px" }}>
+                    {nachname || vorname}
+                  </h1>
+                  <div style={{ height: 1, width: 52, background: "#ccc" }} />
+                </div>
+              </>
+            );
+          })()}
           <div style={{ color: "#ccc", fontSize: 18, marginBottom: 16 }}>∨</div>
 
           {f("headline") && (
