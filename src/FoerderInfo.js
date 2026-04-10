@@ -62,8 +62,18 @@ const FOERDER_KARTEN = {
       color: COLORS.green,
     },
     {
-      id: "bem",
-      titel: "Betriebliches Eingliederungsmanagement (BEM)",
+      id: "jobcoaching",
+      titel: "Job-Coaching",
+      was: "Ein Coach begleitet dich direkt am Arbeitsplatz — bei Kommunikation mit Kolleg:innen, Krisen, Einarbeitung oder zwischenmenschlichen Herausforderungen.",
+      fuerWen: "Menschen mit Behinderung oder Neurodivergenz die Unterstützung am Arbeitsplatz brauchen — auch bei sozialen und zwischenmenschlichen Schwierigkeiten.",
+      zustaendig: "Integrationsamt / Agentur für Arbeit / Reha-Träger",
+      kontakt: "Integrationsamt",
+      alternativ: "EUTB / Integrationsfachdienst",
+      naechsterSchritt: "Beim Integrationsamt oder der Agentur für Arbeit nach Job-Coaching fragen.",
+      hinweis: "💡 Kann ein ganzes Arbeitsleben lang gewährt werden — auch präventiv bei Konflikten.",
+      icon: "🎯",
+      color: COLORS.purple,
+    },
       was: "Nach mehr als 6 Wochen Krankenstand muss der Arbeitgeber ein BEM-Gespräch anbieten. Ziel: Arbeitsplatz erhalten.",
       fuerWen: "Alle Beschäftigten die länger als 6 Wochen krank waren.",
       zustaendig: "Arbeitgeber (Pflicht)",
@@ -336,13 +346,32 @@ const CHECK_FRAGEN = [
     id: "situation",
     frage: "Was beschreibt deine Situation am besten?",
     typ: "multi",
-    optionen: ["Ich bin gerade ohne Job", "Ich habe einen Job, brauche aber Unterstützung", "Ich suche einen Ausbildungsplatz", "Ich bin in Schule/Studium", "Ich brauche Hilfe im Alltag", "Ich habe psychische Belastungen"],
+    optionen: [
+      "Ich bin gerade ohne Job",
+      "Ich habe einen Job, brauche aber Unterstützung",
+      "Ich suche einen Ausbildungsplatz",
+      "Ich bin in Schule/Studium",
+      "Ich brauche Hilfe im Alltag",
+      "Ich habe psychische Belastungen",
+      "Ich habe Konflikte am Arbeitsplatz",
+      "Ich war lange krank und möchte zurück in den Beruf",
+    ],
   },
   {
     id: "neurodivergenz",
     frage: "Gibt es spezifische Herausforderungen bei dir?",
     typ: "multi",
-    optionen: ["Konzentration / Fokus", "Reizüberflutung / Lärm", "Struktur & Organisation", "Lesen / Schreiben / Prüfungen", "Kommunikation", "Energie / Erschöpfung", "Mobilität / körperliche Einschränkung", "Sehen / Hören"],
+    optionen: [
+      "Konzentration / Fokus",
+      "Reizüberflutung / Lärm",
+      "Struktur & Organisation",
+      "Lesen / Schreiben / Prüfungen",
+      "Kommunikation",
+      "Zwischenmenschliches / Soziales",
+      "Energie / Erschöpfung",
+      "Mobilität / körperliche Einschränkung",
+      "Sehen / Hören",
+    ],
   },
 ];
 
@@ -388,6 +417,20 @@ function getEmpfehlungen(antworten) {
   }
   if (bereiche.includes("Gesundheit & Psyche") || situation.includes("Ich habe psychische Belastungen")) {
     empf.add("alltag:rpk");
+  }
+  if (situation.includes("Ich habe Konflikte am Arbeitsplatz")) {
+    empf.add("arbeit:jobcoaching");
+    empf.add("arbeit:bem");
+    if (gdb.includes("50+")) empf.add("arbeit:kuendigungsschutz");
+  }
+  if (situation.includes("Ich war lange krank und möchte zurück in den Beruf")) {
+    empf.add("arbeit:bem");
+    empf.add("arbeit:jobcoaching");
+    empf.add("alltag:rpk");
+    empf.add("arbeit:eingliederungszuschuss");
+  }
+  if (neuro.includes("Zwischenmenschliches / Soziales")) {
+    empf.add("arbeit:jobcoaching");
   }
   if (neuro.length >= 2) {
     empf.add("alltag:neurodivergenz");
