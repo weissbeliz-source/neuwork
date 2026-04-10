@@ -106,7 +106,6 @@ export default function AnschreibenExport({ profile, onClose }) {
     gruss: "Mit freundlichen Grüßen",
   });
 
-  const [aiText, setAiText] = useState("");
   const [absatz1, setAbsatz1] = useState("");
   const [absatz2, setAbsatz2] = useState("");
   const [absatz3, setAbsatz3] = useState("");
@@ -156,7 +155,6 @@ export default function AnschreibenExport({ profile, onClose }) {
         return;
       }
 
-      setAiText(text);
       parseAbsaetze(text);
       setAiGenerated(true);
     } catch (err) {
