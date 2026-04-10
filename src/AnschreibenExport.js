@@ -104,6 +104,10 @@ export default function AnschreibenExport({ profile, onClose }) {
     ort: city,
     anrede: "Sehr geehrte Damen und Herren",
     gruss: "Mit freundlichen Grüßen",
+    absenderName: profile?.full_name || "",
+    absenderAdresse: "",
+    absenderEmail: profile?.contact_info?.match(/[\w.-]+@[\w.-]+\.\w+/)?.[0] || "",
+    absenderTel: profile?.contact_info?.match(/[\d\s\+\/\-]{8,}/)?.[0]?.trim() || "",
   });
 
   const [absatz1, setAbsatz1] = useState("");
@@ -195,26 +199,28 @@ export default function AnschreibenExport({ profile, onClose }) {
         <button onClick={onClose} style={{ background: "transparent", border: `1.5px solid ${COLORS.border}`, color: "#CBD5E1", padding: "10px 20px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, fontSize: 14 }}>
           ← Zurück
         </button>
-        {/* E-Mail Bewerbermappe */}
-        {aiGenerated && f("firma") && (
-          <button onClick={() => {
-            const name = form.absenderName || profile?.full_name || "";
-            const betreff = encodeURIComponent(`Bewerbung als ${f("position")} – ${name}`);
+        {/* E-Mail Bewerbermappe — immer sichtbar wenn Firma + Position ausgefüllt */}
+        <button
+          onClick={() => {
+            const name = f("absenderName") || profile?.full_name || "";
+            const tel = f("absenderTel");
+            const email = f("absenderEmail");
+            const betreff = encodeURIComponent(`Bewerbung als ${f("position") || "[Position]"} – ${name}`);
+            const kontakt = [tel && `Tel: ${tel}`, email && `E-Mail: ${email}`].filter(Boolean).join(" | ");
             const body = encodeURIComponent(
               `${f("anrede")},\n\n` +
-              `hiermit bewerbe ich mich auf die ausgeschriebene Stelle als ${f("position")} bei ${f("firma")}. ` +
+              `hiermit bewerbe ich mich auf die ausgeschriebene Stelle als ${f("position") || "[Position]"} bei ${f("firma") || "[Firma]"}. ` +
               `Im Anhang finden Sie mein Anschreiben sowie meinen Lebenslauf.\n\n` +
               `Über eine Einladung zu einem persönlichen Gespräch freue ich mich sehr.\n\n` +
-              `${f("gruss")}\n${name}\n\n` +
-              `---\n` +
-              `💡 Hinweis: Bitte Anschreiben und Lebenslauf als PDF-Dateien anhängen.\n` +
-              `Profil auf Diffusion: ${window.location.origin}/profil/${profile?.id || ""}`
+              `${f("gruss")}\n${name}` +
+              (kontakt ? `\n${kontakt}` : "") +
+              `\n\n---\n💡 Bitte Anschreiben und Lebenslauf als PDF anhängen.`
             );
             window.location.href = `mailto:?subject=${betreff}&body=${body}`;
-          }} style={{ background: COLORS.green, border: "none", color: "#0A0A0A", padding: "10px 20px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, fontSize: 14, fontWeight: 700 }}>
-            📧 E-Mail vorbereiten
-          </button>
-        )}
+          }}
+          style={{ background: COLORS.green, border: "none", color: "#0A0A0A", padding: "10px 20px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, fontSize: 14, fontWeight: 700 }}>
+          📧 E-Mail vorbereiten
+        </button>
         <button onClick={() => window.print()} style={{ background: ACCENT, border: "none", color: "white", padding: "10px 24px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, fontSize: 14, fontWeight: 700 }}>
           ⬇ Als PDF speichern
         </button>
@@ -232,11 +238,19 @@ export default function AnschreibenExport({ profile, onClose }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           <div>
             <label style={labelStyle}>Dein vollständiger Name *</label>
-            <input value={form.absenderName || profile?.full_name || ""} onChange={e => set("absenderName", e.target.value)} placeholder="z.B. Beliz Weiß" style={{ ...inputStyle, resize: "none" }} />
+            <input value={f("absenderName")} onChange={e => set("absenderName", e.target.value)} placeholder="z.B. Beliz Weiß" style={{ ...inputStyle, resize: "none" }} />
           </div>
           <div>
             <label style={labelStyle}>Deine Adresse</label>
-            <input value={form.absenderAdresse || ""} onChange={e => set("absenderAdresse", e.target.value)} placeholder="z.B. Musterstr. 1, 89079 Ulm" style={{ ...inputStyle, resize: "none" }} />
+            <input value={f("absenderAdresse")} onChange={e => set("absenderAdresse", e.target.value)} placeholder="z.B. Musterstr. 1, 89079 Ulm" style={{ ...inputStyle, resize: "none" }} />
+          </div>
+          <div>
+            <label style={labelStyle}>E-Mail</label>
+            <input value={f("absenderEmail")} onChange={e => set("absenderEmail", e.target.value)} placeholder="z.B. name@email.de" style={{ ...inputStyle, resize: "none" }} />
+          </div>
+          <div>
+            <label style={labelStyle}>Telefonnummer</label>
+            <input value={f("absenderTel")} onChange={e => set("absenderTel", e.target.value)} placeholder="z.B. 0178 1234567" style={{ ...inputStyle, resize: "none" }} />
           </div>
           <div>
             <label style={labelStyle}>Firma / Unternehmen *</label>
@@ -343,7 +357,14 @@ export default function AnschreibenExport({ profile, onClose }) {
 
       {/* DRUCKSEITE */}
       <LetterPage>
-        <HeaderBar name={form.absenderName || profile?.full_name} contact={form.absenderAdresse ? `${form.absenderAdresse}${profile?.contact_info ? " | " + profile.contact_info : ""}` : profile?.contact_info} />
+        <HeaderBar
+        name={f("absenderName") || profile?.full_name}
+        contact={[
+          f("absenderAdresse"),
+          f("absenderEmail"),
+          f("absenderTel"),
+        ].filter(Boolean).join(" | ") || profile?.contact_info}
+      />
 
         {/* Empfänger */}
         <div style={{ marginBottom: 32 }}>

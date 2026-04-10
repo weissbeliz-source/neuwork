@@ -28,8 +28,8 @@ const FOERDER_KARTEN = {
       was: "Eine Person unterstützt dich bei der Arbeit — z.B. liest vor, reicht Dinge an, übersetzt. Du leitest sie an.",
       fuerWen: "Menschen mit Schwerbehinderung (GdB 50+). Rechtsanspruch — das Amt muss bewilligen.",
       zustaendig: "Integrationsamt / Inklusionsamt",
-      kontakt: "Integrationsamt",
-      alternativ: "EUTB",
+      kontakt: "Integrationsamt (regional — suche 'Integrationsamt [deine Stadt]'),",
+      alternativ: "EUTB (→ teilhabeberatung.de)",
       naechsterSchritt: "Antrag beim Integrationsamt stellen.",
       hinweis: "💡 Rechtsanspruch — das Amt hat kein Ermessen.",
       icon: "👥",
@@ -43,7 +43,7 @@ const FOERDER_KARTEN = {
       zustaendig: "Reha-Träger / Eingliederungshilfe",
       kontakt: "Eingliederungshilfe (Sozialamt)",
       alternativ: "Agentur für Arbeit",
-      naechsterSchritt: "Beratung bei EUTB oder Eingliederungshilfe.",
+      naechsterSchritt: "→ teilhabeberatung.de (EUTB) oder Eingliederungshilfe beim Sozialamt.",
       hinweis: "💡 Bis zu 75 % des Lohns für den Arbeitgeber.",
       icon: "🏭",
       color: COLORS.yellow,
@@ -55,7 +55,7 @@ const FOERDER_KARTEN = {
       fuerWen: "Menschen die noch keinen passenden Job gefunden haben oder aus einer WfbM wechseln möchten.",
       zustaendig: "Agentur für Arbeit + Integrationsamt",
       kontakt: "Agentur für Arbeit",
-      alternativ: "EUTB",
+      alternativ: "EUTB (→ teilhabeberatung.de)",
       naechsterSchritt: "Bei der Agentur für Arbeit als reha-bedürftig anerkennen lassen.",
       hinweis: "💡 Jobcoaching mindestens 1× pro Woche inklusive.",
       icon: "🌱",
@@ -67,8 +67,8 @@ const FOERDER_KARTEN = {
       was: "Ein Coach begleitet dich direkt am Arbeitsplatz — bei Kommunikation mit Kolleg:innen, Krisen, Einarbeitung oder zwischenmenschlichen Herausforderungen.",
       fuerWen: "Menschen mit Behinderung oder Neurodivergenz die Unterstützung am Arbeitsplatz brauchen — auch bei sozialen und zwischenmenschlichen Schwierigkeiten.",
       zustaendig: "Integrationsamt / Agentur für Arbeit / Reha-Träger",
-      kontakt: "Integrationsamt",
-      alternativ: "EUTB / Integrationsfachdienst",
+      kontakt: "Integrationsamt (regional — suche 'Integrationsamt [deine Stadt]'),",
+      alternativ: "EUTB (teilhabeberatung.de) / Integrationsfachdienst",
       naechsterSchritt: "Beim Integrationsamt oder der Agentur für Arbeit nach Job-Coaching fragen.",
       hinweis: "💡 Kann ein ganzes Arbeitsleben lang gewährt werden — auch präventiv bei Konflikten.",
       icon: "🎯",
@@ -93,7 +93,7 @@ const FOERDER_KARTEN = {
       was: "Eine Kündigung ist nur mit vorheriger Zustimmung des Integrationsamts wirksam.",
       fuerWen: "Menschen mit Schwerbehinderung (GdB 50+) oder Gleichstellung.",
       zustaendig: "Integrationsamt",
-      kontakt: "Integrationsamt",
+      kontakt: "Integrationsamt (regional — suche 'Integrationsamt [deine Stadt]'),",
       alternativ: "Fachanwalt für Arbeitsrecht",
       naechsterSchritt: "Bei Kündigung sofort handeln — Frist für Klage: 3 Wochen!",
       hinweis: "⚠️ 3-Wochen-Frist für Kündigungsschutzklage unbedingt einhalten.",
@@ -120,7 +120,7 @@ const FOERDER_KARTEN = {
       fuerWen: "Menschen mit GdB 30–49 die ohne Gleichstellung keinen geeigneten Arbeitsplatz finden oder halten können.",
       zustaendig: "Agentur für Arbeit",
       kontakt: "Agentur für Arbeit",
-      alternativ: "EUTB",
+      alternativ: "EUTB (→ teilhabeberatung.de)",
       naechsterSchritt: "Antrag online auf arbeitsagentur.de: Suchbegriff 'Gleichstellungsantrag'.",
       hinweis: "💡 Arbeitgeber wird nicht informiert.",
       icon: "⚖",
@@ -137,7 +137,7 @@ const FOERDER_KARTEN = {
       zustaendig: "Reha-Träger",
       kontakt: "Agentur für Arbeit",
       alternativ: "Eingliederungshilfe",
-      naechsterSchritt: "Beratung bei der Agentur für Arbeit oder EUTB.",
+      naechsterSchritt: "Beratung bei der Agentur für Arbeit oder EUTB (teilhabeberatung.de).",
       hinweis: "💡 Begleitung am Ausbildungsplatz ist inklusive.",
       icon: "📚",
       color: COLORS.purple,
@@ -248,9 +248,9 @@ const FOERDER_KARTEN = {
       was: "Du bekommst Geld direkt — und kannst dir selbst Assistenz und Unterstützung organisieren statt vorgegebene Leistungen zu nutzen.",
       fuerWen: "Menschen mit Behinderung die selbst entscheiden möchten wie und durch wen sie unterstützt werden.",
       zustaendig: "Reha-Träger (je nach Leistung verschiedene)",
-      kontakt: "EUTB — hilft bei Klärung",
+      kontakt: "EUTB (→ teilhabeberatung.de)",
       alternativ: "Sozialamt / Eingliederungshilfe",
-      naechsterSchritt: "EUTB kontaktieren um zu klären welcher Träger zuständig ist.",
+      naechsterSchritt: "→ teilhabeberatung.de — kostenlos, anonym, überall in Deutschland verfügbar.",
       hinweis: "💡 Mehr Selbstbestimmung — aber auch mehr Eigenverantwortung.",
       icon: "🪙",
       color: COLORS.purple,
@@ -262,7 +262,7 @@ const FOERDER_KARTEN = {
       fuerWen: "Menschen mit erheblichem Assistenzbedarf im Alltag.",
       zustaendig: "Eingliederungshilfe (Sozialamt)",
       kontakt: "Sozialamt / Eingliederungshilfe",
-      alternativ: "EUTB",
+      alternativ: "EUTB (→ teilhabeberatung.de)",
       naechsterSchritt: "Antrag auf Leistungen der Eingliederungshilfe beim Sozialamt stellen.",
       hinweis: "💡 Auch für Freizeit, Ehrenamt und soziale Teilhabe möglich.",
       icon: "🌍",
@@ -288,7 +288,7 @@ const FOERDER_KARTEN = {
       fuerWen: "Menschen mit schwerer psychischer Erkrankung die beruflich wieder Fuß fassen möchten.",
       zustaendig: "Rentenversicherung oder Krankenversicherung",
       kontakt: "Hausarzt / Psychiater — Einweisung nötig",
-      alternativ: "EUTB / Reha-Träger",
+      alternativ: "EUTB (teilhabeberatung.de) / Reha-Träger",
       naechsterSchritt: "Mit Hausarzt oder Psychiater über RPK sprechen und Antrag bei der Rentenversicherung stellen.",
       hinweis: "💡 Dauert meist 12–24 Monate — sehr effektiv bei psychischen Erkrankungen.",
       icon: "💚",
@@ -300,9 +300,9 @@ const FOERDER_KARTEN = {
       was: "Konkrete Hilfen bei ADHS, Autismus, Legasthenie u.a. — z.B. Nachteilsausgleich, Job-Coaching, Hilfsmittel, angepasste Kommunikation.",
       fuerWen: "Menschen mit Neurodivergenz — auch ohne offiziellen GdB möglich.",
       zustaendig: "Je nach Bereich: Schule, Hochschule, Arbeitgeber, Agentur für Arbeit",
-      kontakt: "EUTB — guter erster Kontakt",
+      kontakt: "EUTB (→ teilhabeberatung.de)",
       alternativ: "Autismus-Beratungsstellen / ADHS-Selbsthilfe",
-      naechsterSchritt: "EUTB kontaktieren — die helfen beim nächsten Schritt je nach Lebenssituation.",
+      naechsterSchritt: "EUTB kontaktieren: teilhabeberatung.de — die helfen beim nächsten Schritt.",
       hinweis: "💡 Nicht nur über Diagnosen denken — konkrete Bedarfe sind entscheidend.",
       icon: "🧩",
       color: COLORS.purple,
@@ -313,9 +313,9 @@ const FOERDER_KARTEN = {
       was: "Wenn mehrere Hilfen gleichzeitig gebraucht werden, kann eine Gesamtplanung mit allen Trägern sinnvoll sein.",
       fuerWen: "Menschen die gleichzeitig Hilfen in mehreren Bereichen brauchen (Schule/Arbeit + Alltag + Psyche etc.).",
       zustaendig: "Eingliederungshilfe koordiniert",
-      kontakt: "EUTB — hilft bei Klärung und Koordination",
+      kontakt: "EUTB (→ teilhabeberatung.de)",
       alternativ: "Sozialamt / Behindertenbeauftragter",
-      naechsterSchritt: "EUTB kontaktieren und Bedarf schildern — die helfen beim nächsten Schritt.",
+      naechsterSchritt: "EUTB kontaktieren: teilhabeberatung.de — Bedarf schildern, nächsten Schritt klären.",
       hinweis: "💡 Du hast das Recht auf einen Teilhabeplan der alle Hilfen koordiniert.",
       icon: "🗂",
       color: COLORS.yellow,
@@ -464,9 +464,34 @@ const KONTAKT_LOGIK = [
   { wann: "Kündigung / Arbeitsrecht", stelle: "Integrationsamt", kontakt: "integrationsaemter.de", schritt: "Sofort handeln — 3-Wochen-Frist!" },
 ];
 
-// ─────────────────────────────────────────────
-// KOMPONENTEN
-// ─────────────────────────────────────────────
+function linkify(text) {
+  if (!text) return text;
+  if (text.includes("teilhabeberatung.de")) {
+    const parts = text.split("teilhabeberatung.de");
+    return (
+      <span>
+        {parts[0]}
+        <a href="https://www.teilhabeberatung.de" target="_blank" rel="noreferrer"
+          style={{ color: "#A78BFA", fontWeight: 600 }}>teilhabeberatung.de</a>
+        {parts[1]}
+      </span>
+    );
+  }
+  if (text.includes("Integrationsamt") || text.includes("Inklusionsamt")) {
+    return <span>{text} <span style={{ fontSize: 11, color: "#64748B" }}>(regional — bei deiner Stadt suchen)</span></span>;
+  }
+  if (text.includes("integrationsaemter.de")) {
+    return (
+      <span>
+        {text.split("integrationsaemter.de")[0]}
+        <a href="https://www.integrationsaemter.de" target="_blank" rel="noreferrer"
+          style={{ color: "#A78BFA", fontWeight: 600 }}>integrationsaemter.de</a>
+        {text.split("integrationsaemter.de")[1]}
+      </span>
+    );
+  }
+  return text;
+}
 
 function Card({ karte }) {
   const [open, setOpen] = useState(false);
@@ -491,13 +516,13 @@ function Card({ karte }) {
             ].map(r => r.val && (
               <div key={r.label} style={{ background: "#0F172A", borderRadius: 8, padding: "10px 14px" }}>
                 <p style={{ fontFamily: FONT, fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "#64748B", marginBottom: 4 }}>{r.label}</p>
-                <p style={{ fontFamily: FONT, fontSize: 14, color: "#CBD5E1" }}>{r.val}</p>
+                <p style={{ fontFamily: FONT, fontSize: 14, color: "#CBD5E1" }}>{linkify(r.val)}</p>
               </div>
             ))}
           </div>
           <div style={{ background: karte.color + "18", border: `1px solid ${karte.color}33`, borderRadius: 8, padding: "12px 16px", marginTop: 12 }}>
             <p style={{ fontFamily: FONT, fontSize: 13, fontWeight: 700, color: karte.color, marginBottom: 4 }}>Nächster Schritt</p>
-            <p style={{ fontFamily: FONT, fontSize: 14, color: "#CBD5E1" }}>{karte.naechsterSchritt}</p>
+            <p style={{ fontFamily: FONT, fontSize: 14, color: "#CBD5E1" }}>{linkify(karte.naechsterSchritt)}</p>
           </div>
           {karte.hinweis && (
             <p style={{ fontFamily: FONT, fontSize: 13, color: "#94A3B8", marginTop: 10 }}>{karte.hinweis}</p>
@@ -687,8 +712,8 @@ export default function FoerderInfo({ profile }) {
               ⭐ Tipp: Bei Unsicherheit immer zuerst die EUTB kontaktieren
             </p>
             <p style={{ fontFamily: FONT, fontSize: 14, color: "#94A3B8" }}>
-              Kostenlos, unabhängig, ohne Bürokratie — helfen herauszufinden wer zuständig ist.{" "}
-              <a href="https://www.eutb.de" target="_blank" rel="noreferrer" style={{ color: COLORS.purple }}>eutb.de →</a>
+              Kostenlos, unabhängig, ohne Bürokratie — direkt suchen unter:{" "}
+              <a href="https://www.teilhabeberatung.de" target="_blank" rel="noreferrer" style={{ color: COLORS.purple, fontWeight: 600 }}>teilhabeberatung.de →</a>
             </p>
           </div>
 

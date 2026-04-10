@@ -8,6 +8,96 @@ import AnschreibenExport from "./AnschreibenExport";
 import { EMPTY_PROFILE, TAG_OPTIONS, NEED_CATEGORIES, COLORS, FONT, NAV_ITEMS, ROLEMODEL_TAGS } from "./constants";
 import { parseStoredField, serializeField } from "./profileUtils";
 
+// ─── KI Stärken-Generator ────────────────────────────────────────────────────
+function StaerkenGenerator({ onAdd }) {
+  const [text, setText] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const generiere = async () => {
+    if (!text.trim()) return;
+    setLoading(true);
+    setError("");
+    setResult(null);
+    try {
+      const res = await fetch(
+        "https://zyeixswgxrwybolobnzn.supabase.co/functions/v1/generate-staerken",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ erfahrungen: text }),
+        }
+      );
+      const data = await res.json();
+      if (data.error) { setError(data.error); setLoading(false); return; }
+      setResult(data);
+    } catch (e) {
+      setError("Verbindungsfehler: " + e.message);
+    }
+    setLoading(false);
+  };
+
+  const inp = { width: "100%", padding: "10px 14px", background: "#0F172A", border: `1.5px solid ${COLORS.border}`, borderRadius: 8, color: "#F8FAFC", fontFamily: FONT, fontSize: 14, resize: "vertical" };
+
+  return (
+    <div style={{ marginTop: 8 }}>
+      <button type="button" onClick={() => setOpen(o => !o)} style={{ display: "flex", alignItems: "center", gap: 8, background: COLORS.purpleBg, border: `1.5px solid ${COLORS.purple}`, borderRadius: 10, padding: "10px 18px", cursor: "pointer", fontFamily: FONT, fontSize: 13, fontWeight: 600, color: COLORS.purple }}>
+        ✨ Stärken mit KI aus Erfahrungen entdecken {open ? "▲" : "▼"}
+      </button>
+      {open && (
+        <div style={{ background: "#0B1120", border: `1.5px solid ${COLORS.purple}`, borderTop: "none", borderRadius: "0 0 10px 10px", padding: "16px 18px" }}>
+          <p style={{ fontFamily: FONT, fontSize: 13, color: "#94A3B8", marginBottom: 10, lineHeight: 1.6 }}>
+            Beschreibe was du bisher gemacht hast — auch Ehrenamt, Pflege, Hobbys, Schule. Claude findet deine Stärken.
+          </p>
+          <textarea value={text} onChange={e => setText(e.target.value)} rows={4} style={inp}
+            placeholder={"z.B. Ich habe 3 Jahre meine Oma gepflegt. Davor war ich in der Schülervertretung und habe Events organisiert. Ich liebe es Dinge zu reparieren und programmiere manchmal kleine Tools..."} />
+          <button type="button" onClick={generiere} disabled={loading || !text.trim()}
+            style={{ marginTop: 10, background: loading ? COLORS.border : COLORS.purple, border: "none", color: loading ? "#64748B" : "white", padding: "10px 22px", borderRadius: 8, cursor: loading ? "default" : "pointer", fontFamily: FONT, fontSize: 14, fontWeight: 700, opacity: !text.trim() ? 0.5 : 1 }}>
+            {loading ? "✨ Claude analysiert..." : "✨ Stärken entdecken"}
+          </button>
+          {error && <p style={{ color: COLORS.red, fontFamily: FONT, fontSize: 13, marginTop: 8 }}>{error}</p>}
+
+          {result && (
+            <div style={{ marginTop: 16, display: "grid", gap: 12 }}>
+              {result.kurzprofil && (
+                <div style={{ background: COLORS.purpleBg, border: `1px solid ${COLORS.purpleBorder}`, borderRadius: 8, padding: "10px 14px" }}>
+                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: COLORS.purple, marginBottom: 4 }}>Kurzprofil-Vorschlag</p>
+                  <p style={{ fontFamily: FONT, fontSize: 14, color: "#CBD5E1" }}>{result.kurzprofil}</p>
+                  <button type="button" onClick={() => onAdd("bio", result.kurzprofil)} style={{ marginTop: 6, background: COLORS.purple, border: "none", color: "white", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontFamily: FONT, fontSize: 12 }}>
+                    + Zum Profil hinzufügen
+                  </button>
+                </div>
+              )}
+              {[
+                { key: "staerken_persoenlich", label: "Persönliche Stärken", field: "strengths" },
+                { key: "staerken_fachlich", label: "Fachliche Stärken", field: "strengths_professional" },
+                { key: "skills", label: "Skills", field: "skills" },
+              ].map(({ key, label, field }) => result[key]?.length > 0 && (
+                <div key={key} style={{ background: "#0F172A", borderRadius: 8, padding: "10px 14px" }}>
+                  <p style={{ fontFamily: FONT, fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "#64748B", marginBottom: 8 }}>{label}</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
+                    {result[key].map(s => (
+                      <span key={s} style={{ padding: "4px 12px", borderRadius: 6, background: COLORS.purpleBg, color: COLORS.purple, border: `1px solid ${COLORS.purpleBorder}`, fontSize: 13, fontFamily: FONT }}>
+                        {s}
+                      </span>
+                    ))}
+                  </div>
+                  <button type="button" onClick={() => onAdd(field, result[key])}
+                    style={{ background: COLORS.purple, border: "none", color: "white", padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontFamily: FONT, fontSize: 12 }}>
+                    + Alle zu "{label}" hinzufügen
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Tag-Auswahl-Komponente ──────────────────────────────────────────────────
 function TagField({ label, options, value, onChange, placeholder, categories }) {
   const [open, setOpen] = useState(false);
@@ -205,6 +295,19 @@ export default function MainApp() {
     await navigator.clipboard.writeText(`${window.location.origin}/profil/${cu.id}`);
     setCopyMessage("✓ Link kopiert!");
     setTimeout(() => setCopyMessage(""), 3000);
+  }
+
+  function handleAddStaerken(field, values) {
+    if (field === "bio") {
+      setProfile(p => ({ ...p, bio: values }));
+      return;
+    }
+    setProfile(p => {
+      const existing = p[field]?.tags || [];
+      const newTags = Array.isArray(values) ? values : [values];
+      const merged = [...new Set([...existing, ...newTags])];
+      return { ...p, [field]: { ...p[field], tags: merged } };
+    });
   }
 
   async function postBeitrag() {
@@ -472,6 +575,7 @@ export default function MainApp() {
                   <div style={{ borderTop: `1px solid ${COLORS.border}`, paddingTop: 24 }}>
                     <p style={sectionHead(COLORS.green)}>Was ich mitbringe</p>
                     <div style={{ display: "grid", gap: 8 }}>
+                      <StaerkenGenerator onAdd={handleAddStaerken} />
                       <TagField label="Persönliche Stärken" options={TAG_OPTIONS.strengths_personal} value={profile.strengths} onChange={v => setProfile({ ...profile, strengths: v })} placeholder="Weitere Stärken…" />
                       <TagField label="Fachliche Stärken" options={TAG_OPTIONS.strengths_professional} value={profile.strengths_professional} onChange={v => setProfile({ ...profile, strengths_professional: v })} placeholder="Weitere fachliche Stärken…" />
                       <TagField label="Skills & Tools" options={TAG_OPTIONS.skills} value={profile.skills} onChange={v => setProfile({ ...profile, skills: v })} placeholder="Weitere Skills…" />

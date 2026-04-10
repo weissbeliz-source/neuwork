@@ -107,6 +107,8 @@ export default function LebenslaufExport({ profile, onClose }) {
     headline: profile?.headline || "",
     bio: profile?.bio || "",
     contact: profile?.contact_info || "",
+    email: profile?.contact_info?.match(/[\w.-]+@[\w.-]+\.\w+/)?.[0] || "",
+    tel: profile?.contact_info?.match(/[\d\s\+\/\-]{8,}/)?.[0]?.trim() || "",
     experience: profile?.experience || "",
     education: profile?.education || "",
     languages: profile?.languages || "",
@@ -161,7 +163,9 @@ export default function LebenslaufExport({ profile, onClose }) {
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
           <div><label style={labelStyle}>Name</label><input value={f("name")} onChange={e => set("name", e.target.value)} style={{ ...inputStyle, resize: "none" }} /></div>
-          <div><label style={labelStyle}>Kontakt</label><input value={f("contact")} onChange={e => set("contact", e.target.value)} placeholder="E-Mail, Tel, Ort" style={{ ...inputStyle, resize: "none" }} /></div>
+          <div><label style={labelStyle}>Adresse</label><input value={f("contact")} onChange={e => set("contact", e.target.value)} placeholder="Straße, PLZ Ort" style={{ ...inputStyle, resize: "none" }} /></div>
+          <div><label style={labelStyle}>E-Mail</label><input value={f("email")} onChange={e => set("email", e.target.value)} placeholder="name@email.de" style={{ ...inputStyle, resize: "none" }} /></div>
+          <div><label style={labelStyle}>Telefon</label><input value={f("tel")} onChange={e => set("tel", e.target.value)} placeholder="z.B. 0178 1234567" style={{ ...inputStyle, resize: "none" }} /></div>
           <div style={{ gridColumn: "1/-1" }}><label style={labelStyle}>Headline / Position</label><input value={f("headline")} onChange={e => set("headline", e.target.value)} style={{ ...inputStyle, resize: "none" }} /></div>
           <div style={{ gridColumn: "1/-1" }}><label style={labelStyle}>Kurzprofil (Deckblatt)</label><textarea value={f("bio")} onChange={e => set("bio", e.target.value)} rows={3} style={inputStyle} /></div>
         </div>
@@ -233,9 +237,9 @@ export default function LebenslaufExport({ profile, onClose }) {
             <div style={{ height: 1, width: 36, background: "#ccc" }} />
             <div style={{ height: 1, width: 36, background: "#ccc" }} />
           </div>
-          {f("contact") && (
+          {[f("contact"), f("email"), f("tel")].filter(Boolean).length > 0 && (
             <p style={{ fontFamily: FF, fontSize: 13, color: "#555" }}>
-              {f("contact").split(/[|,]/).map(s => s.trim()).filter(Boolean).join("  |  ")}
+              {[f("contact"), f("email"), f("tel")].filter(Boolean).join("  |  ")}
             </p>
           )}
           <div style={{ display: "flex", alignItems: "center", gap: 20, justifyContent: "center", margin: "10px 0 8px" }}>
@@ -248,7 +252,10 @@ export default function LebenslaufExport({ profile, onClose }) {
 
       {/* ── LEBENSLAUF-SEITE ── */}
       <CVPage>
-        <HeaderBar name={f("name")} contact={f("contact")} />
+        <HeaderBar
+          name={f("name")}
+          contact={[f("contact"), f("email"), f("tel")].filter(Boolean).join(" | ")}
+        />
         <h1 style={{ fontFamily: FF, fontSize: 26, fontWeight: 400, color: "#1a1a2e", marginBottom: 2 }}>Lebenslauf</h1>
 
         {expEntries.length > 0 && (
