@@ -74,6 +74,9 @@ const FOERDER_KARTEN = {
       icon: "🎯",
       color: COLORS.purple,
     },
+    {
+      id: "bem",
+      titel: "Betriebliches Eingliederungsmanagement (BEM)",
       was: "Nach mehr als 6 Wochen Krankenstand muss der Arbeitgeber ein BEM-Gespräch anbieten. Ziel: Arbeitsplatz erhalten.",
       fuerWen: "Alle Beschäftigten die länger als 6 Wochen krank waren.",
       zustaendig: "Arbeitgeber (Pflicht)",
