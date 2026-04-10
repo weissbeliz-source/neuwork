@@ -165,6 +165,129 @@ function TagField({ label, options, value, onChange, placeholder, categories }) 
   );
 }
 
+// ─── Aufklappbare Edit-Sektion ────────────────────────────────────────────────
+// ─── KI Pitch-Generator ──────────────────────────────────────────────────────
+function PitchGenerator({ profile, onAdd }) {
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState("");
+  const [open, setOpen] = useState(false);
+
+  const generiere = async () => {
+    setLoading(true);
+    setError("");
+    setResult(null);
+    try {
+      const res = await fetch(
+        "https://zyeixswgxrwybolobnzn.supabase.co/functions/v1/generate-pitch",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            profil: {
+              name: profile.full_name || "",
+              headline: profile.headline || "",
+              staerken: (profile.strengths?.tags || []).join(", "),
+              staerken_fachlich: (profile.strengths_professional?.tags || []).join(", "),
+              skills: (profile.skills?.tags || []).join(", "),
+              erfahrung: profile.experience || "",
+              beduerfnisse: (profile.needs?.tags || []).slice(0, 5).join(", "),
+              arbeitsstil: (profile.work_style?.tags || []).join(", "),
+            }
+          }),
+        }
+      );
+      const data = await res.json();
+      if (data.error) { setError(data.error); setLoading(false); return; }
+      setResult(data);
+    } catch (e) {
+      setError("Verbindungsfehler: " + e.message);
+    }
+    setLoading(false);
+  };
+
+  const versions = result ? [
+    { key: "kurz", label: "Kurz (1 Satz)", desc: "Knackiger Pitch" },
+    { key: "mittel", label: "Mittel (2–3 Sätze)", desc: "Für Bio / Profil" },
+    { key: "lang", label: "Lang (4–5 Sätze)", desc: "Vollständige Vorstellung" },
+  ] : [];
+
+  return (
+    <div style={{ marginBottom: 4 }}>
+      <button type="button" onClick={() => setOpen(o => !o)} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, background: "#0F172A", border: `1.5px solid ${COLORS.green}`, borderRadius: 10, padding: "10px 18px", cursor: "pointer", fontFamily: FONT, fontSize: 13, fontWeight: 600, color: COLORS.green, width: "100%" }}>
+        <span>🎤 Vorstellungstext mit KI schreiben lassen</span>
+        <span>{open ? "▲" : "▼"}</span>
+      </button>
+
+      {open && (
+        <div style={{ background: "#0B1120", border: `1.5px solid ${COLORS.green}`, borderTop: "none", borderRadius: "0 0 10px 10px", padding: "16px 18px" }}>
+          <p style={{ fontFamily: FONT, fontSize: 13, color: "#94A3B8", marginBottom: 12, lineHeight: 1.6 }}>
+            Claude schreibt drei Versionen — kurz, mittel und lang. Basierend auf deinen Stärken, Skills und Arbeitsweise. Bedürfnisse werden positiv formuliert.
+          </p>
+
+          <button type="button" onClick={generiere} disabled={loading} style={{ background: loading ? COLORS.border : COLORS.green, border: "none", color: loading ? "#64748B" : "#0A0A0A", padding: "10px 22px", borderRadius: 8, cursor: loading ? "default" : "pointer", fontFamily: FONT, fontSize: 14, fontWeight: 700 }}>
+            {loading ? "🎤 Claude schreibt..." : result ? "↻ Neu generieren" : "🎤 Text generieren"}
+          </button>
+          {error && <p style={{ color: "#F87171", fontFamily: FONT, fontSize: 13, marginTop: 8 }}>{error}</p>}
+
+          {result && (
+            <div style={{ marginTop: 16, display: "grid", gap: 10 }}>
+              <div style={{ background: COLORS.greenBg, border: `1px solid ${COLORS.greenBorder}`, borderRadius: 8, padding: "8px 14px", marginBottom: 4 }}>
+                <p style={{ fontFamily: FONT, fontSize: 13, color: COLORS.green, fontWeight: 600 }}>
+                  ✅ Drei Versionen generiert — wähle eine aus:
+                </p>
+              </div>
+              {versions.map(({ key, label, desc }) => result[key] && (
+                <div key={key} style={{ background: "#0F172A", borderRadius: 8, padding: "12px 14px", border: `1px solid ${COLORS.border}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <div>
+                      <span style={{ fontFamily: FONT, fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.07em", color: "#64748B" }}>{label}</span>
+                      <span style={{ fontFamily: FONT, fontSize: 12, color: "#475569", marginLeft: 8 }}>— {desc}</span>
+                    </div>
+                    <button type="button" onClick={() => onAdd(result[key])} style={{ background: COLORS.green, border: "none", color: "#0A0A0A", padding: "4px 14px", borderRadius: 6, cursor: "pointer", fontFamily: FONT, fontSize: 12, fontWeight: 700, flexShrink: 0 }}>
+                      + Übernehmen
+                    </button>
+                  </div>
+                  <p style={{ fontFamily: FONT, fontSize: 14, color: "#CBD5E1", lineHeight: 1.65 }}>{result[key]}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function EditSektion({ label, icon, filled, tip, children }) {
+  const [open, setOpen] = useState(false);
+  const hasFilled = filled > 0;
+  return (
+    <div style={{ border: `1.5px solid ${open ? COLORS.purple : hasFilled ? COLORS.border : COLORS.border}`, borderRadius: 12, overflow: "hidden" }}>
+      <button type="button" onClick={() => setOpen(o => !o)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, padding: "14px 18px", background: open ? COLORS.purpleBg : hasFilled ? "#1a2235" : COLORS.bgCard, border: "none", cursor: "pointer", textAlign: "left" }}>
+        <span style={{ fontSize: 18 }}>{icon}</span>
+        <span style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, color: "#F8FAFC", flex: 1 }}>{label}</span>
+        {hasFilled > 0 && !open && (
+          <span style={{ background: COLORS.green + "33", color: COLORS.green, fontSize: 11, fontWeight: 700, padding: "2px 8px", borderRadius: 10, border: `1px solid ${COLORS.greenBorder}` }}>
+            ✓ {typeof hasFilled === "number" && hasFilled > 1 ? `${hasFilled} Einträge` : "ausgefüllt"}
+          </span>
+        )}
+        <span style={{ color: open ? COLORS.purple : "#64748B", fontSize: 18, fontWeight: 300 }}>{open ? "−" : "+"}</span>
+      </button>
+      {open && (
+        <div style={{ padding: "4px 18px 18px", background: "#0B1120", borderTop: `1px solid ${COLORS.border}` }}>
+          {tip && (
+            <p style={{ fontFamily: FONT, fontSize: 12, color: "#64748B", marginBottom: 12, marginTop: 12, lineHeight: 1.5 }}>
+              💡 {tip}
+            </p>
+          )}
+          {children}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Haupt-App ───────────────────────────────────────────────────────────────
 export default function MainApp() {
   const [activeNav, setActiveNav] = useState("profil");
@@ -484,204 +607,172 @@ export default function MainApp() {
 
             {/* BEARBEITUNGSMODUS */}
             {profileMode === "edit" && (
-              <div style={{ background: COLORS.bgCard, border: `2px solid ${COLORS.purple}`, borderRadius: 16, padding: "32px 36px" }}>
+              <div style={{ background: COLORS.bgCard, border: `2px solid ${COLORS.purple}`, borderRadius: 16, padding: "28px 32px" }}>
                 {profileLoading && <p style={{ color: "#94A3B8", marginBottom: 16, fontSize: 14 }}>Profil wird geladen…</p>}
 
-                <div style={{ display: "grid", gap: 24 }}>
+                <div style={{ display: "grid", gap: 16 }}>
 
-                  {/* Avatar mit Drag-to-Reposition */}
-                  <div>
-                    <label style={lbl}>Profilbild</label>
-                    <div style={{ display: "flex", gap: 20, alignItems: "flex-start", flexWrap: "wrap" }}>
-                      {/* Avatar Vorschau — ziehbar */}
-                      <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
-                        <div
-                          onClick={() => !profile.avatar_url && fileInputRef.current?.click()}
-                          style={{ width: 100, height: 100, borderRadius: "50%", overflow: "hidden", border: `3px solid ${COLORS.purple}`, flexShrink: 0, position: "relative", cursor: profile.avatar_url ? "default" : "pointer", background: COLORS.bgInput }}
-                        >
-                          {profile.avatar_url ? (
-                            <img
-                              src={profile.avatar_url}
-                              alt="avatar"
-                              draggable={false}
-                              style={{
-                                width: "160%", height: "160%",
-                                objectFit: "cover",
-                                position: "absolute",
-                                left: `${profile.avatar_x ?? -30}%`,
-                                top: `${profile.avatar_y ?? -30}%`,
-                                cursor: "grab",
-                                userSelect: "none",
-                              }}
-                              onMouseDown={e => {
-                                e.preventDefault();
-                                const startX = e.clientX;
-                                const startY = e.clientY;
-                                const startObjX = profile.avatar_x ?? -30;
-                                const startObjY = profile.avatar_y ?? -30;
-                                const onMove = mv => {
-                                  const dx = ((mv.clientX - startX) / 100) * 100;
-                                  const dy = ((mv.clientY - startY) / 100) * 100;
-                                  const newX = Math.min(0, Math.max(-60, startObjX + dx));
-                                  const newY = Math.min(0, Math.max(-60, startObjY + dy));
-                                  setProfile(p => ({ ...p, avatar_x: newX, avatar_y: newY }));
-                                };
-                                const onUp = () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
-                                window.addEventListener("mousemove", onMove);
-                                window.addEventListener("mouseup", onUp);
-                              }}
-                            />
-                          ) : (
-                            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 32, fontWeight: 700, color: "white", background: COLORS.purple }}>
-                              {avatarInitial}
-                            </div>
-                          )}
-                        </div>
-                        {profile.avatar_url && (
-                          <p style={{ fontSize: 11, color: "#94A3B8", textAlign: "center", maxWidth: 100 }}>
-                            Bild ziehen um Ausschnitt zu verschieben
-                          </p>
+                  {/* ── PFLICHTFELDER (immer sichtbar) ── */}
+                  <div style={{ display: "flex", gap: 20, alignItems: "flex-start", flexWrap: "wrap" }}>
+                    {/* Avatar */}
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center" }}>
+                      <div onClick={() => !profile.avatar_url && fileInputRef.current?.click()}
+                        style={{ width: 90, height: 90, borderRadius: "50%", overflow: "hidden", border: `3px solid ${COLORS.purple}`, flexShrink: 0, position: "relative", cursor: profile.avatar_url ? "default" : "pointer", background: COLORS.bgInput }}>
+                        {profile.avatar_url ? (
+                          <img src={profile.avatar_url} alt="avatar" draggable={false} style={{ width: "160%", height: "160%", objectFit: "cover", position: "absolute", left: `${profile.avatar_x ?? -30}%`, top: `${profile.avatar_y ?? -30}%`, cursor: "grab", userSelect: "none" }}
+                            onMouseDown={e => {
+                              e.preventDefault();
+                              const startX = e.clientX, startY = e.clientY;
+                              const startObjX = profile.avatar_x ?? -30, startObjY = profile.avatar_y ?? -30;
+                              const onMove = mv => {
+                                const newX = Math.min(0, Math.max(-60, startObjX + ((mv.clientX - startX) / 100) * 100));
+                                const newY = Math.min(0, Math.max(-60, startObjY + ((mv.clientY - startY) / 100) * 100));
+                                setProfile(p => ({ ...p, avatar_x: newX, avatar_y: newY }));
+                              };
+                              const onUp = () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseup", onUp); };
+                              window.addEventListener("mousemove", onMove);
+                              window.addEventListener("mouseup", onUp);
+                            }} />
+                        ) : (
+                          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, fontWeight: 700, color: "white", background: COLORS.purple }}>{avatarInitial}</div>
                         )}
                       </div>
-                      {/* Buttons */}
-                      <div style={{ display: "flex", flexDirection: "column", gap: 8, paddingTop: 4 }}>
-                        <button type="button" onClick={() => fileInputRef.current?.click()} style={{ background: COLORS.purple, border: "none", color: "white", padding: "10px 18px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, fontSize: 14, fontWeight: 600 }}>
-                          {avatarUploading ? "Wird hochgeladen…" : profile.avatar_url ? "Bild wechseln" : "Bild hochladen"}
-                        </button>
-                        {profile.avatar_url && (
-                          <button type="button" onClick={() => setProfile(p => ({ ...p, avatar_url: "", avatar_x: -30, avatar_y: -30 }))} style={{ background: "transparent", border: `1.5px solid ${COLORS.border}`, color: "#94A3B8", padding: "10px 18px", borderRadius: 8, cursor: "pointer", fontFamily: FONT, fontSize: 14 }}>
-                            Bild entfernen
-                          </button>
-                        )}
-                        <p style={{ fontSize: 12, color: "#94A3B8", lineHeight: 1.5 }}>
-                          JPG oder PNG · max. 5 MB
-                        </p>
-                      </div>
+                      <button type="button" onClick={() => fileInputRef.current?.click()} style={{ background: "transparent", border: `1px solid ${COLORS.border}`, color: "#94A3B8", padding: "4px 10px", borderRadius: 6, cursor: "pointer", fontFamily: FONT, fontSize: 11 }}>
+                        {avatarUploading ? "Lädt..." : "Foto"}
+                      </button>
+                      <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={e => { if (e.target.files?.[0]) uploadAvatar(e.target.files[0]); }} />
                     </div>
-                    <input ref={fileInputRef} type="file" accept="image/*" style={{ display: "none" }} onChange={e => { if (e.target.files?.[0]) uploadAvatar(e.target.files[0]); }} />
-                  </div>
 
-                  {/* Basis */}
-                  <div style={{ borderTop: `1px solid ${COLORS.border}`, paddingTop: 24 }}>
-                    <p style={sectionHead(COLORS.purple)}>Wer ich bin</p>
-                    <div style={{ display: "grid", gap: 16 }}>
+                    {/* Name + Headline + Kontakt */}
+                    <div style={{ flex: 1, display: "grid", gap: 12, minWidth: 200 }}>
                       <div><label style={lbl}>Name</label><input type="text" value={profile.full_name} onChange={e => setProfile({ ...profile, full_name: e.target.value })} placeholder="Dein Name" style={inp()} /></div>
-                      <div><label style={lbl}>Headline</label><input type="text" value={profile.headline} onChange={e => setProfile({ ...profile, headline: e.target.value })} placeholder="z.B. UX-Designerin mit Fokus auf Barrierefreiheit" style={inp()} /></div>
-                      <div><label style={lbl}>Über mich</label><textarea value={profile.bio} onChange={e => setProfile({ ...profile, bio: e.target.value })} placeholder="Was treibt mich an? Was macht mich besonders?" rows={3} style={inp({ resize: "vertical" })} /></div>
+                      <div><label style={lbl}>Headline</label><input type="text" value={profile.headline} onChange={e => setProfile({ ...profile, headline: e.target.value })} placeholder="z.B. Systemsprengerin mit Herz für Inklusion" style={inp()} /></div>
+                      <div><label style={lbl}>Kontakt (E-Mail, Tel, Ort)</label><input type="text" value={profile.contact_info} onChange={e => setProfile({ ...profile, contact_info: e.target.value })} placeholder="name@email.de | 0178 ... | Ulm" style={inp()} /></div>
                     </div>
                   </div>
 
-                  {/* Stärken */}
-                  <div style={{ borderTop: `1px solid ${COLORS.border}`, paddingTop: 24 }}>
-                    <p style={sectionHead(COLORS.green)}>Was ich mitbringe</p>
-                    <div style={{ display: "grid", gap: 8 }}>
-                      <StaerkenGenerator onAdd={handleAddStaerken} />
-                      <TagField label="Persönliche Stärken" options={TAG_OPTIONS.strengths_personal} value={profile.strengths} onChange={v => setProfile({ ...profile, strengths: v })} placeholder="Weitere Stärken…" />
-                      <TagField label="Fachliche Stärken" options={TAG_OPTIONS.strengths_professional} value={profile.strengths_professional} onChange={v => setProfile({ ...profile, strengths_professional: v })} placeholder="Weitere fachliche Stärken…" />
-                      <TagField label="Skills & Tools" options={TAG_OPTIONS.skills} value={profile.skills} onChange={v => setProfile({ ...profile, skills: v })} placeholder="Weitere Skills…" />
-                      <TagField label="Wie andere mich erleben" options={TAG_OPTIONS.strengths_others} value={profile.strengths_others} onChange={v => setProfile({ ...profile, strengths_others: v })} placeholder="z.B. Bin ein Sonnenschein im Team…" />
-                      <TagField label="Besondere Fähigkeiten" options={TAG_OPTIONS.strengths_special} value={profile.strengths_special} onChange={v => setProfile({ ...profile, strengths_special: v })} placeholder="z.B. Hyperfokus, Mustererkennung…" />
-                      <div style={{ marginTop: 4 }}>
-                        <label style={lbl}>Spezialinteressen</label>
-                        <textarea value={profile.special_interests} onChange={e => setProfile({ ...profile, special_interests: e.target.value })} placeholder="z.B. Systemdenken, Klimaschutz, Astronomie…" rows={2} style={inp({ resize: "vertical" })} />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Arbeitsweise */}
-                  <div style={{ borderTop: `1px solid ${COLORS.border}`, paddingTop: 24 }}>
-                    <p style={sectionHead(COLORS.yellow)}>Wie ich arbeite</p>
-                    <div style={{ display: "grid", gap: 8 }}>
-                      <TagField label="Arbeitsstil" options={TAG_OPTIONS.work_style} value={profile.work_style} onChange={v => setProfile({ ...profile, work_style: v })} placeholder="Wie arbeitest du am liebsten?" />
-                      <TagField label="Kommunikation" options={TAG_OPTIONS.communication} value={profile.communication_prefs} onChange={v => setProfile({ ...profile, communication_prefs: v })} placeholder="Kommunikationspräferenzen…" />
-                      <TagField label="Hilfsmittel & Technologien" options={TAG_OPTIONS.assistive_tech} value={profile.assistive_tech} onChange={v => setProfile({ ...profile, assistive_tech: v })} placeholder="Weitere Hilfsmittel…" />
-                    </div>
-                  </div>
-
-                  {/* Bedürfnisse */}
-                  <div style={{ borderTop: `1px solid ${COLORS.border}`, paddingTop: 24 }}>
-                    <p style={sectionHead(COLORS.purple)}>Was ich brauche</p>
-                    <TagField label="Bedürfnisse am Arbeitsplatz" options={TAG_OPTIONS.needs} categories={NEED_CATEGORIES} value={profile.needs} onChange={v => setProfile({ ...profile, needs: v })} placeholder="Weitere Bedürfnisse…" />
-                  </div>
-
-                  {/* Werdegang */}
-                  <div style={{ borderTop: `1px solid ${COLORS.border}`, paddingTop: 24 }}>
-                    <p style={sectionHead(COLORS.yellow)}>Werdegang</p>
-                    <div style={{ display: "grid", gap: 16 }}>
-                      <div>
-                        <label style={lbl}>Berufserfahrung</label>
-                        <p style={{ fontSize: 12, color: "#94A3B8", marginBottom: 6 }}>Format: "MM.JJJJ – MM.JJJJ Firma\nPosition\n- Aufgabe"</p>
-                        <textarea value={profile.experience} onChange={e => setProfile({ ...profile, experience: e.target.value })} placeholder={"09.2022 – heute Beispiel GmbH\nSachbearbeitung\n- Aufgabe 1\n- Aufgabe 2"} rows={6} style={inp({ resize: "vertical" })} />
-                      </div>
-                      <div>
-                        <label style={lbl}>Bildungsweg (Ausbildung, Studium, Kurse…)</label>
-                        <textarea value={profile.education} onChange={e => setProfile({ ...profile, education: e.target.value })} placeholder={"2018 – 2022 Hochschule XY\nStudiengang\n- Schwerpunkte"} rows={4} style={inp({ resize: "vertical" })} />
-                      </div>
-                      <div><label style={lbl}>Sprachen</label><input type="text" value={profile.languages} onChange={e => setProfile({ ...profile, languages: e.target.value })} placeholder="z.B. Deutsch (Muttersprache), Englisch (B2)" style={inp()} /></div>
-                    </div>
-                  </div>
-
-                  {/* Verfügbarkeit */}
-                  <div style={{ borderTop: `1px solid ${COLORS.border}`, paddingTop: 24 }}>
-                    <p style={sectionHead(COLORS.green)}>Verfügbarkeit & Kontakt</p>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }} className="two-col">
-                      <div><label style={lbl}>Verfügbar ab</label><input type="text" value={profile.availability} onChange={e => setProfile({ ...profile, availability: e.target.value })} placeholder="z.B. Ab sofort, Ab 01.06.2026" style={inp()} /></div>
-                      <div><label style={lbl}>Arbeitsmodell</label><input type="text" value={profile.work_model} onChange={e => setProfile({ ...profile, work_model: e.target.value })} placeholder="Remote, Hybrid, Vor Ort" style={inp()} /></div>
-                    </div>
-                    <div style={{ marginBottom: 16 }}>
-                      <label style={lbl}>Kontakt (wird nicht öffentlich angezeigt)</label>
-                      <input type="text" value={profile.contact_info} onChange={e => setProfile({ ...profile, contact_info: e.target.value })} placeholder="E-Mail, LinkedIn, Portfolio…" style={inp()} />
-                    </div>
-                    <label style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 15, color: "#CBD5E1", cursor: "pointer" }}>
+                  {/* Offen für Stellen */}
+                  <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 15, color: "#CBD5E1", cursor: "pointer" }}>
                       <input type="checkbox" checked={profile.looking_for_work} onChange={e => setProfile({ ...profile, looking_for_work: e.target.checked })} style={{ width: 18, height: 18 }} />
                       Ich suche aktiv eine Stelle
                     </label>
+                    <input type="text" value={profile.availability} onChange={e => setProfile({ ...profile, availability: e.target.value })} placeholder="Verfügbar ab z.B. sofort" style={inp({ width: "auto", flex: 1, minWidth: 150 })} />
+                    <input type="text" value={profile.work_model} onChange={e => setProfile({ ...profile, work_model: e.target.value })} placeholder="Remote / Hybrid / Vor Ort" style={inp({ width: "auto", flex: 1, minWidth: 150 })} />
                   </div>
 
-                  {/* Als Vorbild */}
-                  <div style={{ borderTop: `1px solid ${COLORS.border}`, paddingTop: 24 }}>
-                    <p style={sectionHead(COLORS.yellow)}>Als Vorbild sichtbar sein</p>
-                    <p style={{ fontSize: 14, color: "#94A3B8", marginBottom: 14 }}>Zeige dein Profil in der Vorbilder-Galerie — ohne Kontaktdaten.</p>
-                    <label style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 15, color: "#CBD5E1", cursor: "pointer", marginBottom: 14 }}>
-                      <input type="checkbox" checked={profile.is_rolemodel} onChange={e => setProfile({ ...profile, is_rolemodel: e.target.checked })} style={{ width: 18, height: 18 }} />
-                      Ich möchte als Vorbild sichtbar sein
-                    </label>
-                    {profile.is_rolemodel && (
-                      <div>
-                        <label style={lbl}>Meine Tags</label>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                          {ROLEMODEL_TAGS.map(tag => {
-                            const curr = profile.rolemodel_tags?.split(",").map(t => t.trim()).filter(Boolean) || [];
-                            const sel = curr.includes(tag);
-                            return (
-                              <button key={tag} type="button" onClick={() => {
-                                const next = sel ? curr.filter(t => t !== tag) : [...curr, tag];
-                                setProfile({ ...profile, rolemodel_tags: next.join(", ") });
-                              }} style={{ padding: "6px 14px", borderRadius: 8, border: `1.5px solid ${sel ? COLORS.yellow : COLORS.border}`, background: sel ? COLORS.yellowBg : "transparent", color: sel ? COLORS.yellow : COLORS.textMuted, fontSize: 13, cursor: "pointer" }}>
-                                {tag}
-                              </button>
-                            );
-                          })}
+                  {/* ── OPTIONALE SEKTIONEN (aufklappbar) ── */}
+                  {[
+                    {
+                      id: "bio", label: "Über mich", icon: "💬",
+                      filled: !!profile.bio,
+                      tip: "2–3 Sätze reichen völlig — oder lass Claude einen Pitch-Text für dich schreiben.",
+                      content: (
+                        <div style={{ display: "grid", gap: 10 }}>
+                          <PitchGenerator profile={profile} onAdd={(text) => setProfile(p => ({ ...p, bio: text }))} />
+                          <StaerkenGenerator onAdd={handleAddStaerken} />
+                          <textarea value={profile.bio} onChange={e => setProfile({ ...profile, bio: e.target.value })} placeholder="Was treibt mich an? Was macht mich besonders?" rows={3} style={inp({ resize: "vertical" })} />
                         </div>
-                      </div>
-                    )}
-                  </div>
+                      )
+                    },
+                    {
+                      id: "staerken", label: "Stärken & Skills", icon: "⭐",
+                      filled: (profile.strengths?.tags?.length || 0) + (profile.skills?.tags?.length || 0),
+                      tip: "3–6 persönliche Stärken reichen. Bei Skills 5–10 konkrete Tools/Methoden.",
+                      content: (
+                        <div style={{ display: "grid", gap: 8 }}>
+                          <TagField label="Persönliche Stärken" options={TAG_OPTIONS.strengths_personal} value={profile.strengths} onChange={v => setProfile({ ...profile, strengths: v })} placeholder="Weitere Stärken…" />
+                          <TagField label="Fachliche Stärken" options={TAG_OPTIONS.strengths_professional} value={profile.strengths_professional} onChange={v => setProfile({ ...profile, strengths_professional: v })} placeholder="Weitere fachliche Stärken…" />
+                          <TagField label="Skills & Tools" options={TAG_OPTIONS.skills} value={profile.skills} onChange={v => setProfile({ ...profile, skills: v })} placeholder="Weitere Skills…" />
+                          <TagField label="Wie andere mich erleben" options={TAG_OPTIONS.strengths_others} value={profile.strengths_others} onChange={v => setProfile({ ...profile, strengths_others: v })} placeholder="z.B. Bin ein Sonnenschein im Team…" />
+                          <TagField label="Besondere Fähigkeiten" options={TAG_OPTIONS.strengths_special} value={profile.strengths_special} onChange={v => setProfile({ ...profile, strengths_special: v })} placeholder="z.B. Hyperfokus…" />
+                          <div><label style={lbl}>Spezialinteressen</label><textarea value={profile.special_interests} onChange={e => setProfile({ ...profile, special_interests: e.target.value })} placeholder="z.B. Klimaschutz, Astronomie…" rows={2} style={inp({ resize: "vertical" })} /></div>
+                        </div>
+                      )
+                    },
+                    {
+                      id: "beduerfnisse", label: "Bedürfnisse am Arbeitsplatz", icon: "⚙️",
+                      filled: profile.needs?.tags?.length || 0,
+                      tip: "Wähle zuerst die relevanten Kategorien — dann nur innerhalb auswählen. Die 3 häufigsten werden im Profil oben angezeigt.",
+                      content: (
+                        <div style={{ display: "grid", gap: 8 }}>
+                          <TagField label="Bedürfnisse" options={TAG_OPTIONS.needs} categories={NEED_CATEGORIES} value={profile.needs} onChange={v => setProfile({ ...profile, needs: v })} placeholder="Weitere Bedürfnisse…" />
+                        </div>
+                      )
+                    },
+                    {
+                      id: "arbeitsweise", label: "Wie ich arbeite", icon: "🔄",
+                      filled: (profile.work_style?.tags?.length || 0) + (profile.communication_prefs?.tags?.length || 0),
+                      tip: "Optional — hilft Arbeitgebern einzuschätzen wie du am besten arbeitest.",
+                      content: (
+                        <div style={{ display: "grid", gap: 8 }}>
+                          <TagField label="Arbeitsstil" options={TAG_OPTIONS.work_style} value={profile.work_style} onChange={v => setProfile({ ...profile, work_style: v })} placeholder="Wie arbeitest du am liebsten?" />
+                          <TagField label="Kommunikation" options={TAG_OPTIONS.communication} value={profile.communication_prefs} onChange={v => setProfile({ ...profile, communication_prefs: v })} placeholder="Kommunikationspräferenzen…" />
+                          <TagField label="Hilfsmittel & Technologien" options={TAG_OPTIONS.assistive_tech} value={profile.assistive_tech} onChange={v => setProfile({ ...profile, assistive_tech: v })} placeholder="Weitere Hilfsmittel…" />
+                        </div>
+                      )
+                    },
+                    {
+                      id: "werdegang", label: "Werdegang", icon: "📋",
+                      filled: !!profile.experience || !!profile.education,
+                      tip: "Format für Stationen: \"MM.JJJJ – MM.JJJJ  Firma\" → neue Zeile \"Position\" → \"- Aufgabe\"",
+                      content: (
+                        <div style={{ display: "grid", gap: 14 }}>
+                          <div>
+                            <label style={lbl}>Berufserfahrung</label>
+                            <p style={{ fontSize: 12, color: "#64748B", marginBottom: 6 }}>Format: "09.2022 – heute  Firma GmbH" → neue Zeile "Position" → "- Aufgabe"</p>
+                            <textarea value={profile.experience} onChange={e => setProfile({ ...profile, experience: e.target.value })} placeholder={"09.2022 – heute  Stadt Ulm
+Fallmanagement
+- Individuelle Beratung"} rows={6} style={inp({ resize: "vertical" })} />
+                          </div>
+                          <div>
+                            <label style={lbl}>Bildungsweg</label>
+                            <textarea value={profile.education} onChange={e => setProfile({ ...profile, education: e.target.value })} placeholder={"10.2018 – 03.2022  Hochschule XY
+B.A. Soziale Arbeit"} rows={4} style={inp({ resize: "vertical" })} />
+                          </div>
+                          <div><label style={lbl}>Sprachen</label><input type="text" value={profile.languages} onChange={e => setProfile({ ...profile, languages: e.target.value })} placeholder="Deutsch (Muttersprache), Englisch (B2)" style={inp()} /></div>
+                        </div>
+                      )
+                    },
+                    {
+                      id: "einstellungen", label: "Vorbild & Fördercheck", icon: "🔧",
+                      filled: profile.is_rolemodel || profile.has_disability_id ? 1 : 0,
+                      tip: "Optional — nur ausfüllen wenn relevant.",
+                      content: (
+                        <div style={{ display: "grid", gap: 16 }}>
+                          <div>
+                            <label style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 15, color: "#CBD5E1", cursor: "pointer", marginBottom: 12 }}>
+                              <input type="checkbox" checked={profile.is_rolemodel} onChange={e => setProfile({ ...profile, is_rolemodel: e.target.checked })} style={{ width: 18, height: 18 }} />
+                              Als Vorbild in der Galerie sichtbar sein
+                            </label>
+                            {profile.is_rolemodel && (
+                              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                                {ROLEMODEL_TAGS.map(tag => {
+                                  const curr = profile.rolemodel_tags?.split(",").map(t => t.trim()).filter(Boolean) || [];
+                                  const sel = curr.includes(tag);
+                                  return <button key={tag} type="button" onClick={() => { const next = sel ? curr.filter(t => t !== tag) : [...curr, tag]; setProfile({ ...profile, rolemodel_tags: next.join(", ") }); }} style={{ padding: "5px 12px", borderRadius: 6, border: `1.5px solid ${sel ? COLORS.yellow : COLORS.border}`, background: sel ? COLORS.yellowBg : "transparent", color: sel ? COLORS.yellow : "#94A3B8", fontSize: 13, cursor: "pointer" }}>{tag}</button>;
+                                })}
+                              </div>
+                            )}
+                          </div>
+                          <div>
+                            <label style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 15, color: "#CBD5E1", cursor: "pointer", marginBottom: 10 }}>
+                              <input type="checkbox" checked={profile.has_disability_id} onChange={e => setProfile({ ...profile, has_disability_id: e.target.checked })} style={{ width: 18, height: 18 }} />
+                              Ich habe einen Schwerbehindertenausweis
+                            </label>
+                            {profile.has_disability_id && <input type="text" value={profile.disability_degree} onChange={e => setProfile({ ...profile, disability_degree: e.target.value })} placeholder="GdB z.B. 50" style={inp({ maxWidth: 200 })} />}
+                          </div>
+                        </div>
+                      )
+                    },
+                  ].map(sektion => (
+                    <EditSektion key={sektion.id} label={sektion.label} icon={sektion.icon} filled={sektion.filled} tip={sektion.tip}>
+                      {sektion.content}
+                    </EditSektion>
+                  ))}
 
-                  {/* Fördercheck */}
-                  <div style={{ borderTop: `1px solid ${COLORS.border}`, paddingTop: 24 }}>
-                    <p style={sectionHead()}>Für den Fördercheck (nur für dich)</p>
-                    <label style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 15, color: "#CBD5E1", cursor: "pointer", marginBottom: 14 }}>
-                      <input type="checkbox" checked={profile.has_disability_id} onChange={e => setProfile({ ...profile, has_disability_id: e.target.checked })} style={{ width: 18, height: 18 }} />
-                      Ich habe einen Schwerbehindertenausweis (oder habe einen beantragt)
-                    </label>
-                    {profile.has_disability_id && (
-                      <div><label style={lbl}>Grad der Behinderung (GdB)</label><input type="text" value={profile.disability_degree} onChange={e => setProfile({ ...profile, disability_degree: e.target.value })} placeholder="z.B. 50" style={inp({ maxWidth: 200 })} /></div>
-                    )}
-                  </div>
-
-                  {/* Save + Fehler */}
                   {saveMessage && (
-                    <div style={{ padding: "12px 18px", borderRadius: 10, background: saveMessage.includes("✓") ? COLORS.greenBg : COLORS.redBg, color: saveMessage.includes("✓") ? COLORS.green : COLORS.red, border: `1px solid ${saveMessage.includes("✓") ? COLORS.greenBorder : COLORS.redBg}`, fontSize: 15 }}>
+                    <div style={{ padding: "12px 18px", borderRadius: 10, background: saveMessage.includes("✓") ? COLORS.greenBg : COLORS.redBg, color: saveMessage.includes("✓") ? COLORS.green : "#F87171", fontSize: 15 }}>
                       {saveMessage}
                     </div>
                   )}
